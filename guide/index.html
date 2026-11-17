@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>앱 사랑방 사용 안내서</title>
+<meta name="description" content="앱 사랑방 설치부터 앱 등록, 의견 나눔, 아이디어, 배움터, 묻고 답하기까지 사진으로 보는 가이드북">
+<link rel="icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F8F6; --paper:#FFFFFF; --ink:#1F2A27; --sub:#5F6D69; --line:#DFE8E4;
+  --pri:#2E7D6B; --pri-soft:#E3F1EC; --blue:#2F6FAE; --blue-soft:#E4EEF8; --warm:#C77A2B; --warm-soft:#FBEFE1; --red:#E4572E;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#121816;--paper:#1B2321;--ink:#EEF3F1;--sub:#A4B2AE;--line:#2B3633;--pri:#5BB89F;--pri-soft:#1F3631;--blue:#7FB0E3;--blue-soft:#1D2B3A;--warm:#E3A866;--warm-soft:#33281C}
+}
+:root[data-theme="dark"]{--bg:#121816;--paper:#1B2321;--ink:#EEF3F1;--sub:#A4B2AE;--line:#2B3633;--pri:#5BB89F;--pri-soft:#1F3631;--blue:#7FB0E3;--blue-soft:#1D2B3A;--warm:#E3A866;--warm-soft:#33281C}
+*{box-sizing:border-box}
+html{font-size:17px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--blue)}
+.topbar{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:8px;align-items:center}
+.topbar b{margin-right:auto}
+.tb{display:inline-flex;align-items:center;min-height:42px;padding:0 14px;border-radius:12px;background:var(--pri);color:#fff;text-decoration:none;font-weight:700;font-size:.9rem}
+.tb.line{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+main{max-width:900px;margin:0 auto;padding:16px}
+.page{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:28px 26px;margin:0 0 18px}
+.kicker{display:inline-block;font-weight:900;color:var(--pri);background:var(--pri-soft);border-radius:999px;padding:3px 14px;font-size:.85rem;letter-spacing:.02em}
+h1{font-size:2.3rem;line-height:1.25;margin:10px 0 8px;letter-spacing:-.03em}
+h2{font-size:1.6rem;line-height:1.3;margin:10px 0 6px;letter-spacing:-.02em}
+h3{font-size:1.15rem;margin:18px 0 6px}
+p.lead{color:var(--sub);margin:0 0 14px;font-size:1.02rem}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+ol.steps li{counter-increment:s;position:relative;padding:4px 0 4px 40px;margin:4px 0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:5px;width:28px;height:28px;border-radius:50%;background:var(--pri);color:#fff;font-weight:900;font-size:.9rem;display:grid;place-items:center}
+ul.dots{padding-left:1.2em;margin:6px 0}
+ul.dots li{margin:3px 0}
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:16px 0 4px;align-items:start}
+.phones.three{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+figure{margin:0;text-align:center}
+figure img{width:100%;max-width:290px;border-radius:22px;border:6px solid #1F2A27;box-shadow:0 6px 18px rgba(0,0,0,.12);display:block;margin:0 auto;background:#fff}
+figure.wide img{max-width:100%;border-width:4px;border-radius:12px}
+figcaption{font-size:.88rem;color:var(--sub);margin-top:8px;font-weight:500}
+figcaption b{color:var(--ink)}
+.tip{background:var(--blue-soft);border-radius:14px;padding:12px 16px;margin:14px 0 0;font-size:.95rem}
+.warn{background:var(--warm-soft);border-radius:14px;padding:12px 16px;margin:14px 0 0;font-size:.95rem}
+.red{color:var(--red);font-weight:700}
+.chip{display:inline-block;background:var(--pri-soft);color:var(--pri);border-radius:8px;padding:0 8px;font-weight:700;white-space:nowrap}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+th{background:var(--pri-soft);color:var(--ink)}
+.cover{text-align:center;padding:56px 26px 40px;background:linear-gradient(160deg,var(--pri-soft),var(--paper) 55%,var(--blue-soft))}
+.cover .logo{width:96px;height:96px;border-radius:26px;display:block;margin:0 auto 16px}
+.cover h1{font-size:2.8rem;margin:6px 0}
+.cover .sub{font-size:1.15rem;color:var(--sub);margin:0 0 30px}
+.qrs{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin:10px 0 20px}
+.qr{background:#fff;border-radius:18px;padding:14px;border:1px solid var(--line);width:210px;color:#1F2A27}
+.qr .box{width:170px;height:170px;margin:0 auto}
+.qr .box img,.qr .box canvas{width:170px!important;height:170px!important}
+.qr b{display:block;margin-top:8px}
+.qr small{display:block;font-size:.72rem;color:#5F6D69;word-break:break-all}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin:12px 0}
+.toc a{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:12px;padding:10px 14px;text-decoration:none;color:var(--ink);font-weight:700}
+.toc a span{color:var(--pri);font-weight:900;min-width:1.6em}
+.tabs4{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.tabs4 div{background:var(--bg);border-radius:14px;padding:12px 14px}
+.tabs4 b{display:block;font-size:1.05rem}
+.tabs4 span{font-size:.9rem;color:var(--sub)}
+.foot{text-align:center;color:var(--sub);font-size:.85rem;margin:20px 0 40px}
+@media (max-width:520px){html{font-size:16px}.page{padding:22px 16px}h1{font-size:1.9rem}.cover h1{font-size:2.2rem}}
+
+@page{size:A4;margin:12mm 13mm}
+@media print{
+  :root{--bg:#F5F8F6;--paper:#fff;--ink:#1F2A27;--sub:#5F6D69;--line:#DFE8E4;--pri:#2E7D6B;--pri-soft:#E3F1EC;--blue:#2F6FAE;--blue-soft:#E4EEF8;--warm-soft:#FBEFE1}
+  html{font-size:12.5pt}
+  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.noprint{display:none!important}
+  main{max-width:none;padding:0}
+  .page{border:0;border-radius:0;padding:0;margin:0;break-after:page;page-break-after:always}
+  .page:last-of-type{break-after:auto}
+  .cover{padding:30mm 10mm 0;background:none;min-height:250mm}
+  .phones{display:flex;justify-content:center;gap:9mm}
+  .phones figure{flex:0 0 auto;width:62mm}
+  .phones.three figure{width:52mm}
+  figure img{max-width:100%;border-width:4px;border-radius:16px;box-shadow:none}
+  figure.wide{width:100%!important}
+  figure.wide img{max-height:70mm;width:auto;max-width:100%}
+  .phones.wide2{flex-direction:column;align-items:center;gap:5mm}
+  .phones.wide2 figure{width:130mm}
+  h2{font-size:19pt}
+  .foot{display:none}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="topbar noprint"><div class="in">
+  <b>📘 앱 사랑방 안내서</b>
+  <a class="tb line" href="앱사랑방_사용안내서.pdf" download>PDF 받기</a>
+  <a class="tb" href="../">앱 열기</a>
+</div></div>
+
+<main>
+<!-- 표지 -->
+<section class="page cover">
+  <img class="logo" src="../icon-512.png" alt="">
+  <span class="kicker">사용 안내서</span>
+  <h1>앱 사랑방</h1>
+  <p class="sub">목회자들이 함께 만들고, 함께 다듬는 앱 갤러리</p>
+  <div class="qrs">
+    <div class="qr"><div class="box" id="qrDemo"></div><b>🧪 먼저 둘러보기 (체험판)</b><small>jangyu-church.github.io/appbang/?demo=1</small></div>
+    <div class="qr"><div class="box" id="qrReal"></div><b>🏠 앱 사랑방 (실제)</b><small>jangyu-church.github.io/appbang/</small></div>
+  </div>
+  <p class="sub" style="font-size:1rem;margin:0">폰 카메라로 QR을 비추면 바로 열려요.<br>체험판에서는 마음껏 눌러 보셔도 아무것도 저장되지 않아요.</p>
+</section>
+
+<!-- 목차 -->
+<section class="page" id="toc">
+  <span class="kicker">들어가며</span>
+  <h2>앱 사랑방은 이런 곳이에요</h2>
+  <p class="lead">처음 앱을 만들기 시작한 목회자들이 서로의 앱을 구경하고, 따뜻한 의견을 나누고, 그 의견으로 앱을 더 좋게 고쳐 가는 곳입니다. 화면 아래쪽 메뉴 4개로 움직여요.</p>
+  <div class="tabs4">
+    <div><b>🏠 앱 구경</b><span>우리가 만든 앱 모음, 의견 나눔</span></div>
+    <div><b>💡 아이디어</b><span>"나는 이런 앱 만들고 싶어요"</span></div>
+    <div><b>🎓 배움터</b><span>강의 주제 신청, 시연 신청</span></div>
+    <div><b>💬 묻고 답하기</b><span>막힌 곳을 함께 풀어요</span></div>
+  </div>
+  <h3>차례</h3>
+  <div class="toc">
+    <a href="#install"><span>1</span>폰에 앱으로 설치하기</a>
+    <a href="#home"><span>2</span>첫 화면 둘러보기</a>
+    <a href="#detail"><span>3</span>앱 자세히 보기</a>
+    <a href="#feedback"><span>4</span>의견 나누기</a>
+    <a href="#register"><span>5</span>내 앱 등록하기</a>
+    <a href="#owner"><span>6</span>만든 분 공간</a>
+    <a href="#ideas"><span>7</span>아이디어</a>
+    <a href="#learn"><span>8</span>배움터</a>
+    <a href="#qna"><span>9</span>묻고 답하기</a>
+    <a href="#lecture"><span>10</span>강의·모임 때 쓰는 법</a>
+    <a href="#faq"><span>11</span>자주 묻는 질문</a>
+  </div>
+  <div class="tip">💡 이 안내서의 사진은 모두 <b>체험판</b> 화면이에요. 사진 속 <span class="red">빨간 테두리</span>가 눌러야 할 곳입니다.</div>
+</section>
+
+<!-- 1. 설치 -->
+<section class="page" id="install">
+  <span class="kicker">1 · 가장 먼저</span>
+  <h2>📲 폰에 앱으로 설치하기</h2>
+  <p class="lead">한 번 설치하면 바탕화면 아이콘으로 바로 열려요. 주소를 다시 찾을 필요가 없습니다.</p>
+  <ol class="steps">
+    <li>앱 사랑방 주소를 열고, 오른쪽 위 <span class="chip">📲 설치</span> 버튼이나 첫 화면의 파란 <span class="chip">› 설치하기</span> 안내를 눌러요.</li>
+    <li>쓰시는 폰에 맞는 설치 방법이 저절로 나와요. 그대로 따라 하시면 됩니다.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/01-install-btn.png" alt="설치 버튼 위치"><figcaption><b>설치 버튼</b> — 위쪽과 첫 화면 두 곳</figcaption></figure>
+    <figure><img src="img/02-install-ios.png" alt="아이폰 설치 안내"><figcaption><b>아이폰</b> — Safari에서 공유 ⬆️ → 홈 화면에 추가</figcaption></figure>
+  </div>
+</section>
+
+<section class="page">
+  <span class="kicker">1 · 설치 (이어서)</span>
+  <h2>안드로이드폰 · 카카오톡에서 열었을 때</h2>
+  <table>
+    <tr><th style="width:28%">폰</th><th>설치 방법</th></tr>
+    <tr><td><b>안드로이드 (크롬)</b></td><td><span class="chip">📲 설치</span>를 누르면 설치 창이 바로 떠요. <b>설치</b>만 누르면 끝! 창이 안 뜨면 오른쪽 위 <b>⋮ → 앱 설치(홈 화면에 추가)</b>.</td></tr>
+    <tr><td><b>아이폰 (Safari)</b></td><td>아래쪽 <b>공유 버튼 ⬆️ → 홈 화면에 추가 → 추가</b>. 아이폰은 Safari에서만 돼요.</td></tr>
+    <tr><td><b>카카오톡에서 연 경우</b></td><td>카톡 안의 화면에서는 설치가 안 돼요. <b>⋮ 또는 공유 → 다른 브라우저로 열기</b>를 먼저 하세요. 안드로이드는 <b>Chrome으로 바로 열기</b> 버튼이 있어요.</td></tr>
+  </table>
+  <div class="phones">
+    <figure><img src="img/03-install-android.png" alt="안드로이드 설치 안내"><figcaption><b>안드로이드</b> 설치 안내</figcaption></figure>
+    <figure><img src="img/04-install-kakao.png" alt="카카오톡 안내"><figcaption><b>카카오톡에서 열었을 때</b></figcaption></figure>
+  </div>
+  <div class="tip">💡 설치가 끝나면 설치 버튼과 안내는 저절로 사라져요. 체험판에서 설치를 눌러도 <b>실제 앱 사랑방</b>이 설치됩니다.</div>
+</section>
+
+<!-- 2. 첫 화면 -->
+<section class="page" id="home">
+  <span class="kicker">2 · 앱 구경</span>
+  <h2>🏠 첫 화면 둘러보기</h2>
+  <p class="lead">첫 화면에는 함께 나눈 앱이 카드로 모여 있어요.</p>
+  <table>
+    <tr><th style="width:30%">버튼</th><th>하는 일</th></tr>
+    <tr><td><b>📱 QR</b></td><td>앱 사랑방 QR을 크게 띄워요. 모임 때 화면에 띄워 두면 모두 바로 접속해요.</td></tr>
+    <tr><td><b>가가</b></td><td>글씨를 크게 바꿔요. 프로젝터로 보여 줄 때 좋아요.</td></tr>
+    <tr><td><b>🌓</b></td><td>밝은 화면, 어두운 화면, 폰 설정 따라가기를 차례로 바꿔요.</td></tr>
+    <tr><td><b>찾기 · 정렬 · 분야</b></td><td>앱 이름이나 만든 분으로 찾고, 최신순·공감순·의견 많은 순으로 바꿔 보고, 설교·교육·기도 같은 분야별로 모아 봐요. <b>🙋 도움 필요</b>를 누르면 도움을 구하는 앱만 보여요.</td></tr>
+  </table>
+  <div class="phones">
+    <figure><img src="img/05-home-top.png" alt="위쪽 버튼"><figcaption><b>위쪽 버튼</b> — QR · 큰 글씨 · 밝기</figcaption></figure>
+    <figure><img src="img/06-home-search.png" alt="찾기와 분야"><figcaption><b>찾기 · 정렬 · 분야</b></figcaption></figure>
+  </div>
+</section>
+
+<section class="page">
+  <span class="kicker">2 · 앱 구경 (이어서)</span>
+  <h2>앱 카드와 최근 소식</h2>
+  <ul class="dots">
+    <li><b>앱 카드 한 장</b>에 대표 사진, 상태, 분야, 앱 이름, 한 줄 설명, 만든 분, 👍 좋아요 수, 💬 의견 수가 나와요. 카드를 누르면 자세한 화면으로 들어가요.</li>
+    <li>상태 표시: <span class="chip">✅ 사용 중</span> <span class="chip">🔨 만드는 중</span> <span class="chip">🙋 도움이 필요해요</span></li>
+    <li>맨 끝의 <b>＋ 내 앱 등록하기</b> 카드로 내 앱을 올려요. (5장)</li>
+    <li>아래쪽 <b>🔔 최근 소식</b>에서 새 앱, 새 의견, 업데이트, 답변을 한눈에 봐요.</li>
+  </ul>
+  <div class="phones">
+    <figure><img src="img/07-home-cards.png" alt="앱 카드"><figcaption><b>앱 카드</b> — 누르면 자세히 보기</figcaption></figure>
+    <figure><img src="img/09-home-recent.png" alt="최근 소식"><figcaption><b>최근 소식</b></figcaption></figure>
+  </div>
+</section>
+
+<!-- 3. 상세 -->
+<section class="page" id="detail">
+  <span class="kicker">3 · 앱 자세히 보기</span>
+  <h2>🔍 앱 한 개를 자세히 보기</h2>
+  <ol class="steps">
+    <li><b>🚀 앱 바로 열기</b> — 그 앱을 직접 써 봐요.</li>
+    <li><b>📱 QR로 열기</b> — 앱 QR을 띄워요. 시연할 때 모두가 자기 폰으로 따라 열 수 있어요.</li>
+    <li><b>👍 좋아요</b> — 마음에 들면 눌러 응원해 주세요.</li>
+    <li><b>📘 이렇게 써요</b> — 만든 분이 적은 사용법 3~5줄이에요. 스크린샷이 있으면 옆으로 넘겨 보고, 누르면 크게 보여요.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/10-detail-top.png" alt="앱 상세 위쪽"><figcaption><b>바로 열기 · QR · 좋아요</b></figcaption></figure>
+    <figure><img src="img/11-detail-howto.png" alt="사용법과 만든 이야기"><figcaption><b>이렇게 써요 · 이렇게 만들었어요</b></figcaption></figure>
+  </div>
+</section>
+
+<section class="page">
+  <span class="kicker">3 · 앱 자세히 보기 (이어서)</span>
+  <h2>만든 이야기, AI 요청문, 자라 온 기록</h2>
+  <ul class="dots">
+    <li><b>🛠️ 이렇게 만들었어요</b> — 어떤 AI 도구로, 얼마나 걸려, 어디서 막혔는지 나눈 이야기예요. 막혔던 이야기가 다른 분께 가장 큰 도움이 돼요.</li>
+    <li><b>🧩 이렇게 부탁했어요</b> — 만든 분이 AI에게 처음 쓴 요청문이에요. <span class="chip">📋 요청문 복사</span>를 누르면 그대로 복사돼요. Claude나 ChatGPT에 붙여 넣고 내 교회에 맞게 고치면 비슷한 앱을 만들 수 있어요.</li>
+    <li><b>📈 자라 온 기록</b> — v1, v2, v3… 앱이 의견을 받아 어떻게 좋아졌는지 보여 줘요.</li>
+  </ul>
+  <div class="phones">
+    <figure><img src="img/12-detail-prompt.png" alt="AI 요청문"><figcaption><b>요청문 복사해서 나도 만들어 보기</b></figcaption></figure>
+    <figure><img src="img/13-detail-timeline.png" alt="자라 온 기록"><figcaption><b>자라 온 기록</b></figcaption></figure>
+  </div>
+</section>
+
+<!-- 4. 의견 -->
+<section class="page" id="feedback">
+  <span class="kicker">4 · 의견 나눔</span>
+  <h2>💬 의견 나누기</h2>
+  <p class="lead">앱을 써 보고 느낀 점을 남겨 주세요. 의견이 모여야 앱이 자랍니다.</p>
+  <ol class="steps">
+    <li>의견 종류를 골라요: <span class="chip">💡 아이디어</span> <span class="chip">🔧 바꿔 주세요</span> <span class="chip">🐞 오류 발견</span> <span class="chip">🙏 잘 쓰고 있어요</span></li>
+    <li>내용을 적고 이름을 적어요. 비워 두면 '익명'으로 올라가요.</li>
+    <li><b>의견 보내기</b>를 눌러요. 다른 분 의견에 공감하면 <b>👍 공감</b>을 눌러요.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/14-fb-write.png" alt="의견 쓰기"><figcaption><b>의견 종류 고르고 쓰기</b></figcaption></figure>
+    <figure><img src="img/15-fb-list.png" alt="반영된 의견"><figcaption><b>✅ 반영했어요</b> — 만든 분의 한마디도 보여요</figcaption></figure>
+  </div>
+  <div class="tip">💡 <b>따뜻한 의견 쓰는 법: 칭찬 한 가지 + 제안 한 가지.</b> "무엇을 눌렀더니 어떻게 됐다"처럼 구체적으로 쓰면 고치기가 훨씬 쉬워요.</div>
+</section>
+
+<!-- 5. 등록 -->
+<section class="page" id="register">
+  <span class="kicker">5 · 내 앱 등록</span>
+  <h2>＋ 내 앱 등록하기</h2>
+  <p class="lead">첫 화면 맨 끝의 <b>＋ 내 앱 등록하기</b>를 눌러요. 완성 전이어도 괜찮아요. 상태를 <b>🙋 도움이 필요해요</b>로 두면 다른 분들이 먼저 찾아와 의견을 남겨 줘요.</p>
+  <table>
+    <tr><th style="width:30%">칸</th><th>적는 법</th></tr>
+    <tr><td><b>앱 이름 · 한 줄 설명 · 주소</b> (필수)</td><td>한 줄 설명에는 "무엇을 해결해 주는 앱인지"를 적어요. 주소는 GitHub Pages 주소예요.</td></tr>
+    <tr><td><b>분야 · 지금 상태 · 만든 분</b></td><td>이름 대신 "익명"으로 보여 줄 수도 있어요.</td></tr>
+    <tr><td><b>스크린샷 (최대 3장)</b></td><td>폰 화면을 캡처해 고르면 저절로 올라가요. 첫 장이 대표 사진이 돼요.</td></tr>
+    <tr><td><b>사용법 · AI 도구 · 걸린 시간 · 만든 이야기 · 요청문</b></td><td>사용법은 한 줄에 하나씩 3~5줄로 써요. 요청문은 쓰지 않아도 되지만, 나누면 다른 분이 따라 만들 수 있어요.</td></tr>
+    <tr><td><b>비밀번호</b> (필수)</td><td>4자리 이상. 나중에 앱 정보를 고치거나 의견에 "반영" 표시를 할 때 써요. <b>꼭 기억해 두세요.</b></td></tr>
+  </table>
+  <div class="phones three">
+    <figure><img src="img/21-form-1.png" alt="등록 1"><figcaption><b>①</b> 이름 · 설명 · 주소</figcaption></figure>
+    <figure><img src="img/22-form-2.png" alt="등록 2"><figcaption><b>②</b> 스크린샷 · 사용법</figcaption></figure>
+    <figure><img src="img/23-form-3.png" alt="등록 3"><figcaption><b>③</b> 비밀번호 → 등록하기</figcaption></figure>
+  </div>
+</section>
+
+<!-- 6. 만든 분 공간 -->
+<section class="page" id="owner">
+  <span class="kicker">6 · 만든 분 공간</span>
+  <h2>🧑‍💻 받은 의견으로 앱 고치기</h2>
+  <p class="lead">내 앱 화면 맨 아래 <b>만든 분 공간</b>에서 의견을 정리하고, 앱을 고치고, 고친 소식을 알려요.</p>
+  <ol class="steps">
+    <li><b>🤖 의견 묶어서 AI 수정 요청문 복사</b> — 아직 반영하지 않은 의견을 한 번에 정리해 복사해 줘요. Claude나 ChatGPT에 그대로 붙여 넣으면 AI가 의견대로 코드를 고쳐 줘요. <b>가장 쓸모 있는 기능이에요!</b></li>
+    <li><b>🔑 내가 만든 앱이에요</b> — 등록할 때 정한 비밀번호를 넣으면 만든 분으로 들어가요.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/16-owner-space.png" alt="만든 분 공간"><figcaption><b>AI 수정 요청문 · 만든 분 들어가기</b></figcaption></figure>
+    <figure><img src="img/17-owner-pw.png" alt="비밀번호"><figcaption><b>비밀번호 넣고 들어가기</b></figcaption></figure>
+  </div>
+</section>
+
+<section class="page">
+  <span class="kicker">6 · 만든 분 공간 (이어서)</span>
+  <h2>✅ 반영 표시와 🚀 업데이트 소식</h2>
+  <ol class="steps">
+    <li>의견대로 고쳤으면 그 의견의 <b>✅ 반영했어요 표시</b>를 누르고 감사 한마디를 남겨요. 의견 주신 분께 큰 기쁨이 돼요.</li>
+    <li><b>🚀 업데이트 소식 올리기</b> — 버전(v2, v3…)과 바뀐 점을 적어요. <b>자라 온 기록</b>과 첫 화면 <b>최근 소식</b>에 올라가요. 이때 앱 상태도 함께 바꿀 수 있어요.</li>
+    <li><b>✏️ 앱 정보 고치기</b> — 설명, 사진, 사용법, 비밀번호를 바꿔요.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/18-owner-mark.png" alt="반영 표시"><figcaption><b>✅ 반영했어요 표시</b></figcaption></figure>
+    <figure><img src="img/20-owner-update.png" alt="업데이트 소식"><figcaption><b>🚀 업데이트 소식 올리기</b></figcaption></figure>
+  </div>
+  <div class="warn">🔑 비밀번호를 잊으셨으면 모임 담당자께 말씀해 주세요. 담당자가 관리자 비밀번호로 도와드릴 수 있어요.</div>
+</section>
+
+<!-- 7. 아이디어 -->
+<section class="page" id="ideas">
+  <span class="kicker">7 · 아이디어</span>
+  <h2>💡 "나는 이런 앱 만들고 싶어요"</h2>
+  <p class="lead">아직 만들 줄 몰라도 괜찮아요. 필요한 앱을 적어 두면 같은 고민을 가진 분이 모이고, 누군가는 손을 들어 만들어 줘요.</p>
+  <ul class="dots">
+    <li><b>아이디어 올리기</b> — 어떤 앱인지, 어떤 불편을 해결하는지 적어요.</li>
+    <li><span class="chip">🙋 나도 필요해요</span> — 같은 필요가 있으면 눌러요. 많이 눌린 아이디어가 위로 올라가요.</li>
+    <li><span class="chip">🔨 제가 만들어 볼게요</span> — 만들어 보고 싶으면 손을 들어요. 여러 분이 함께 들어도 돼요.</li>
+    <li><span class="chip">🤖 AI 요청문</span> — 이 아이디어로 앱을 만들어 달라는 요청문을 복사해 줘요. 구글 시트와 GitHub Pages 방식까지 들어 있어요.</li>
+  </ul>
+  <div class="phones">
+    <figure><img src="img/24-ideas-top.png" alt="아이디어 올리기"><figcaption><b>아이디어 올리기</b></figcaption></figure>
+    <figure><img src="img/25-ideas-card.png" alt="아이디어 카드"><figcaption><b>나도 필요해요 · 제가 만들어 볼게요 · AI 요청문</b></figcaption></figure>
+  </div>
+</section>
+
+<!-- 8. 배움터 -->
+<section class="page" id="learn">
+  <span class="kicker">8 · 배움터</span>
+  <h2>🎓 강의 주제 신청과 시연 신청</h2>
+  <ul class="dots">
+    <li><b>🎓 듣고 싶은 강의 주제</b> — 배우고 싶은 것을 적고, 다른 분의 신청에는 <span class="chip">🙋 저도 듣고 싶어요</span>를 눌러 투표해요. 표를 많이 받은 주제부터 🥇🥈🥉로 보여요.</li>
+    <li><b>🎤 시연 신청</b> — 다음 모임에서 내 앱을 5분 동안 보여 주고 싶으면 신청해요. 완성 전인 앱도, "여기서 막혔어요"도 좋은 시연이에요.</li>
+    <li><b>🧭 처음 시작하는 분께</b> — 불편 고르기 → AI에게 부탁하기 → GitHub Pages에 올리기 → 사랑방에 올리기 → 의견 반영하기, 다섯 단계를 짧게 안내해요.</li>
+  </ul>
+  <div class="phones">
+    <figure><img src="img/26-learn-topic.png" alt="강의 주제"><figcaption><b>강의 주제 신청 · 투표</b></figcaption></figure>
+    <figure><img src="img/27-learn-demo.png" alt="시연 신청"><figcaption><b>시연 신청</b></figcaption></figure>
+  </div>
+</section>
+
+<!-- 9. 묻고 답하기 -->
+<section class="page" id="qna">
+  <span class="kicker">9 · 묻고 답하기</span>
+  <h2>💬 막힌 곳을 함께 풀어요</h2>
+  <ol class="steps">
+    <li><b>질문하기</b> — 한 줄 제목을 쓰고, "무엇을 하려고 했고, 무엇을 눌렀고, 어떤 메시지가 떴는지" 적어요.</li>
+    <li><b>⏳ 답을 기다려요</b>를 누르면 아직 답이 없는 질문만 모여요. 아는 것이 있으면 먼저 답해 주세요.</li>
+    <li>답이 도움이 되면 <span class="chip">🙏 도움됐어요</span>를 누르고, 문제가 풀리면 질문하신 분이 <span class="chip">✅ 해결됐어요</span>를 눌러요.</li>
+  </ol>
+  <div class="phones">
+    <figure><img src="img/29-qna-list.png" alt="질문 목록"><figcaption><b>질문하기 · 답을 기다리는 질문</b></figcaption></figure>
+    <figure><img src="img/30-qna-detail.png" alt="질문과 답변"><figcaption><b>답변 · 도움됐어요 · 해결됐어요</b></figcaption></figure>
+  </div>
+  <div class="tip">💡 잘 모르는 부분을 답할 때는 "제 경우엔…"이라고 시작해 주세요. 틀려도 괜찮은 분위기가 서로를 자라게 해요.</div>
+</section>
+
+<!-- 10. 강의 -->
+<section class="page" id="lecture">
+  <span class="kicker">10 · 강의 · 모임</span>
+  <h2>📽️ 프로젝터로 함께 볼 때</h2>
+  <ol class="steps">
+    <li>노트북으로 체험판(또는 실제 앱)을 열고 오른쪽 위 <b>가가</b>를 눌러 글씨를 크게 해요.</li>
+    <li><b>📱 QR</b>을 눌러 화면에 띄우면 참석자들이 폰 카메라로 바로 접속해요.</li>
+    <li>시연할 때는 그 앱 화면의 <b>📱 QR로 열기</b>를 띄워요. 모두가 자기 폰에서 앱을 직접 써 보며 들을 수 있어요.</li>
+    <li>체험판으로 연습한 뒤 <b>🏠 진짜 앱 사랑방으로 가기</b>를 눌러 실제 앱에 각자 앱을 등록해요.</li>
+  </ol>
+  <div class="phones wide2">
+    <figure class="wide"><img src="img/31-projector.png" alt="큰 글씨 화면"><figcaption><b>큰 글씨(가가)를 켠 프로젝터 화면</b></figcaption></figure>
+    <figure class="wide"><img src="img/32-qr.png" alt="QR 화면"><figcaption><b>📱 QR</b> — 참석자가 바로 접속</figcaption></figure>
+  </div>
+</section>
+
+<!-- 11. FAQ -->
+<section class="page" id="faq">
+  <span class="kicker">11 · 자주 묻는 질문</span>
+  <h2>❓ 이럴 땐 이렇게 하세요</h2>
+  <table>
+    <tr><th style="width:38%">궁금한 점</th><th>답</th></tr>
+    <tr><td>체험판과 실제 앱은 무엇이 달라요?</td><td>체험판은 예시 앱과 글이 들어 있는 연습용이에요. 무엇을 눌러도 저장되지 않아요. 실제 앱에서 쓴 글과 사진만 저장돼요.</td></tr>
+    <tr><td>스크린샷은 어떻게 찍어요?</td><td>내 앱을 폰으로 열고 화면을 캡처하세요. 아이폰은 옆 버튼과 볼륨 위 버튼을 함께 누르고, 안드로이드는 전원 버튼과 볼륨 아래 버튼을 함께 눌러요. 등록할 때 사진에서 고르면 크기는 저절로 줄여서 올려 줘요.</td></tr>
+    <tr><td>앱 주소는 어디서 찾아요?</td><td>GitHub 저장소 → Settings → Pages에 나오는 주소예요. 보통 <b>https://아이디.github.io/저장소이름/</b> 모양이에요.</td></tr>
+    <tr><td>비밀번호를 잊었어요.</td><td>모임 담당자께 말씀해 주세요. 관리자 비밀번호로 대신 들어가 도와드릴 수 있어요.</td></tr>
+    <tr><td>잘못 올린 글을 지우고 싶어요.</td><td>모임 담당자께 말씀해 주세요. 담당자가 숨겨 드려요.</td></tr>
+    <tr><td>새 글이 안 보여요.</td><td>앱을 닫았다 다시 열거나 새로고침해 주세요. 앱을 다시 열 때마다 새 소식을 불러와요.</td></tr>
+    <tr><td>이름을 매번 적어야 하나요?</td><td>아니요. 한 번 적으면 그 폰이 기억해 두었다가 다음부터 자동으로 채워 줘요.</td></tr>
+  </table>
+  <div class="tip" style="text-align:center;font-size:1.05rem;margin-top:22px">
+    "철이 철을 날카롭게 하는 것같이 사람이 그의 친구의 얼굴을 빛나게 하느니라" (잠언 27:17, 개역개정)<br>
+    <b>서로의 앱을 다듬어 주는 따뜻한 사랑방이 되기를 바랍니다.</b>
+  </div>
+</section>
+</main>
+<p class="foot noprint">앱 사랑방 · <a href="../">앱 열기</a> · <a href="../?demo=1">체험판</a></p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  try{
+    if(!window.QRCode)return;
+    var base='https://jangyu-church.github.io/appbang/';
+    [['qrDemo',base+'?demo=1'],['qrReal',base]].forEach(function(x){
+      new QRCode(document.getElementById(x[0]),{text:x[1],width:340,height:340,correctLevel:QRCode.CorrectLevel.M});
+    });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
