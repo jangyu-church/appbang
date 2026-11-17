@@ -32,6 +32,8 @@ html[data-theme="dark"]{
   }
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+@media (max-width:430px){.brand .bt{display:none}}
 html{font-size:18px;-webkit-text-size-adjust:100%}
 html[data-size="big"]{font-size:24px}
 body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;word-break:keep-all;overflow-wrap:anywhere;
@@ -192,7 +194,8 @@ details.guide summary{font-weight:700;cursor:pointer;min-height:40px;display:fle
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand" href="#/"><span class="mark" aria-hidden="true">⛪</span>앱 사랑방</a>
+  <a class="brand" href="#/"><span class="mark" aria-hidden="true">⛪</span><span class="bt">앱 사랑방</span></a>
+  <button class="icon-btn" id="btnInstall" hidden title="폰에 앱으로 설치">📲 설치</button>
   <button class="icon-btn" id="btnQR" title="이 갤러리 QR 코드">📱 QR</button>
   <button class="icon-btn" id="btnSize" aria-pressed="false" title="강의용 큰 글씨">가<b>가</b></button>
   <button class="icon-btn" id="btnTheme" title="밝게/어둡게">🌓</button>
@@ -394,6 +397,7 @@ function viewHome(){
     +(DEMO?'<div class="demo">🧪 <b>체험판</b>입니다. 예시 앱과 글이 들어 있어요. 마음껏 눌러 보세요. 여기서 쓴 글은 저장되지 않아요.'+(API_URL?'<div style="margin-top:8px"><a class="btn pri sm" href="'+esc(REAL_URL)+'">🏠 진짜 앱 사랑방으로 가기</a></div>':'')+'</div>'
       :'<div class="notice" style="background:var(--warm-soft)"><span>🧪</span><div>처음이세요? 예시 앱이 채워진 <a href="?demo=1"><b>체험판</b></a>에서 먼저 눌러 보세요.</div></div>')
     +(c.notice?'<div class="notice"><span>📢</span><div>'+esc(c.notice)+'</div></div>':'')
+    +(installed()?'':'<button class="notice" id="heroInstall" style="width:100%;text-align:left;border:0;background:var(--blue-soft);font-weight:600"><span>📲</span><div>폰 바탕화면에 <b>앱으로 설치</b>하면 다음부터 한 번에 열려요 <span style="color:var(--blue)">› 설치하기</span></div></button>')
     +'<div class="stats"><div class="stat"><b>'+d.apps.length+'</b><span>함께 나눈 앱</span></div><div class="stat"><b>'+d.feedback.length+'</b><span>오간 의견</span></div><div class="stat"><b>'+done+'</b><span>반영된 의견</span></div></div></div>';
   h+='<div class="toolbar"><input class="search" id="q" type="search" placeholder="🔍 앱 이름, 만든 분, AI 도구로 찾기" value="'+esc(S.q)+'" aria-label="앱 찾기">'
     +'<select class="select" id="sort" aria-label="정렬"><option value="new">최신순</option><option value="like">공감순</option><option value="talk">의견 많은 순</option></select></div>';
@@ -743,6 +747,7 @@ document.addEventListener('click',function(e){
   }
   var r2=route(),cur=app(r2.id);
   switch(id){
+    case 'btnInstall':case 'heroInstall':install();return;
     case 'btnQR':showQR(baseUrl(),'앱 사랑방');return;
     case 'btnSize':S.prefs.size=S.prefs.size==='big'?'normal':'big';store.set('ab_prefs',S.prefs);applyPrefs();toast(S.prefs.size==='big'?'강의용 큰 글씨로 바꿨어요':'보통 글씨로 바꿨어요');return;
     case 'btnTheme':var seq={auto:'dark',dark:'light',light:'auto'};S.prefs.theme=seq[S.prefs.theme]||'auto';store.set('ab_prefs',S.prefs);applyPrefs();toast({auto:'폰 설정 따라가기',dark:'어둡게',light:'밝게'}[S.prefs.theme]);return;
@@ -790,12 +795,40 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var l=$('.l
 window.addEventListener('hashchange',function(){closeModal();render();window.scrollTo(0,0)});
 new MutationObserver(function(){var s=$('#sort');if(s&&s.value!==S.sort)s.value=S.sort}).observe($('#view'),{childList:true});
 
+/* ---------- 폰에 설치 ---------- */
+var deferredInstall=null;
+function installed(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+var UA=navigator.userAgent||'';
+var IS_IOS=/iPhone|iPad|iPod/i.test(UA)||(/Macintosh/.test(UA)&&navigator.maxTouchPoints>1);
+var IN_APP=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\//i.test(UA);
+function showInstallBtn(){var b=$('#btnInstall');if(b)b.hidden=installed()}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstall=e;showInstallBtn()});
+window.addEventListener('appinstalled',function(){deferredInstall=null;toast('설치했어요! 바탕화면에서 앱 사랑방을 찾아보세요');showInstallBtn();render()});
+function install(){
+  if(installed())return toast('이미 앱으로 열려 있어요');
+  if(deferredInstall&&!IN_APP){deferredInstall.prompt();deferredInstall.userChoice.then(function(){deferredInstall=null});return}
+  var url=baseUrl().split('?')[0],h='';
+  if(IN_APP){
+    h='<p><b>지금은 카카오톡(또는 다른 앱) 안의 화면이라 설치가 안 돼요.</b> 먼저 일반 인터넷 앱으로 열어 주세요.</p>'
+     +'<ol class="howto"><li>오른쪽 아래(또는 위) <b>⋮ / 공유</b> 버튼을 눌러요</li><li><b>"다른 브라우저로 열기"</b>를 골라요<br><span class="sub">아이폰은 Safari, 안드로이드는 Chrome</span></li><li>열린 화면에서 다시 <b>📲 설치</b>를 눌러요</li></ol>'
+     +(/Android/i.test(UA)?'<a class="btn pri block" style="margin-top:14px" href="intent://'+esc(url.replace(/^https?:\/\//,''))+'#Intent;scheme=https;package=com.android.chrome;end">Chrome으로 바로 열기</a>':'')
+     +'<button class="btn line block" style="margin-top:8px" id="cpUrl">🔗 주소 복사하기</button>';
+  }else if(IS_IOS){
+    h='<p class="sub">아이폰은 <b>Safari</b>에서 이렇게 설치해요.</p><ol class="howto"><li>화면 아래(또는 위) <b>공유 버튼 <span style="font-size:1.2em">⬆️</span></b>을 눌러요<br><span class="sub">네모에서 화살표가 위로 나온 모양</span></li><li>목록을 아래로 내려 <b>"홈 화면에 추가"</b>를 눌러요</li><li>오른쪽 위 <b>"추가"</b>를 누르면 끝!</li></ol><p class="sub">Safari가 아닌 앱(크롬·카톡 등)에서는 이 메뉴가 없을 수 있어요. 그럴 땐 주소를 복사해 Safari에 붙여 넣어 주세요.</p><button class="btn line block" id="cpUrl">🔗 주소 복사하기</button>';
+  }else{
+    h='<p class="sub">안드로이드 <b>Chrome</b>에서 이렇게 설치해요.</p><ol class="howto"><li>오른쪽 위 <b>⋮</b> (점 세 개)를 눌러요</li><li><b>"앱 설치"</b> 또는 <b>"홈 화면에 추가"</b>를 눌러요</li><li><b>"설치"</b>를 누르면 바탕화면에 아이콘이 생겨요</li></ol><p class="sub">PC 크롬은 주소창 오른쪽의 <b>설치 아이콘(⊕)</b>을 누르면 돼요.</p><button class="btn line block" id="cpUrl">🔗 주소 복사하기</button>';
+  }
+  modal('📲 폰에 앱으로 설치하기',h);
+  var c=$('#cpUrl');if(c)c.onclick=function(){copy(url,'주소를 복사했어요')};
+}
+
 /* ---------- 시작 ---------- */
 applyPrefs();
+showInstallBtn();
 render();
 load(!!S.data,true);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&!$('.modal'))load(true,true)});
-if('serviceWorker' in navigator&&!DEMO){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
+if('serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
 })();
 </script>
 </body>
