@@ -213,7 +213,9 @@ details.guide summary{font-weight:700;cursor:pointer;min-height:40px;display:fle
 'use strict';
 var CFG=window.APPBANG_CONFIG||{};
 var API_URL=(CFG.API_URL||'').trim();
-var DEMO=!API_URL;
+var FORCE_DEMO=/[?&]demo(=1)?(&|$)/.test(location.search);
+var DEMO=!API_URL||FORCE_DEMO;
+var REAL_URL=location.href.split('#')[0].split('?')[0];
 
 var CATS=[['설교·말씀','📖'],['교육·양육','🌱'],['기도·묵상','🙏'],['예배·찬양','🎵'],['행정·재정','📋'],['교제·소통','🤝'],['기타','✨']];
 var STATUS={'사용 중':['✅','ok'],'만드는 중':['🔨','build'],'도움이 필요해요':['🙋','help']};
@@ -249,7 +251,7 @@ function shot(src,em,alt){return src&&okUrl(src)||String(src||'').indexOf('data:
 
 /* ---------- 상태 ---------- */
 var S={
-  data:store.get('ab_cache',null),
+  data:DEMO?null:store.get('ab_cache',null),
   me:store.get('ab_me',''),
   liked:store.get('ab_liked',{}),
   prefs:store.get('ab_prefs',{size:'normal',theme:'auto'}),
@@ -389,7 +391,8 @@ function viewHome(){
   });
   var done=d.feedback.filter(function(f){return f.done==='Y'}).length;
   var h='<div class="hero"><h1>우리가 만든 앱들</h1><p>목회 현장의 작은 불편을 AI와 함께 풀어 낸 앱을 구경하고, 서로 다듬어 줘요.</p>'
-    +(DEMO?'<div class="demo">🧪 <b>체험판</b>입니다. 마음껏 눌러 보세요. 여기서 쓴 글은 저장되지 않아요.</div>':'')
+    +(DEMO?'<div class="demo">🧪 <b>체험판</b>입니다. 예시 앱과 글이 들어 있어요. 마음껏 눌러 보세요. 여기서 쓴 글은 저장되지 않아요.'+(API_URL?'<div style="margin-top:8px"><a class="btn pri sm" href="'+esc(REAL_URL)+'">🏠 진짜 앱 사랑방으로 가기</a></div>':'')+'</div>'
+      :'<div class="notice" style="background:var(--warm-soft)"><span>🧪</span><div>처음이세요? 예시 앱이 채워진 <a href="?demo=1"><b>체험판</b></a>에서 먼저 눌러 보세요.</div></div>')
     +(c.notice?'<div class="notice"><span>📢</span><div>'+esc(c.notice)+'</div></div>':'')
     +'<div class="stats"><div class="stat"><b>'+d.apps.length+'</b><span>함께 나눈 앱</span></div><div class="stat"><b>'+d.feedback.length+'</b><span>오간 의견</span></div><div class="stat"><b>'+done+'</b><span>반영된 의견</span></div></div></div>';
   h+='<div class="toolbar"><input class="search" id="q" type="search" placeholder="🔍 앱 이름, 만든 분, AI 도구로 찾기" value="'+esc(S.q)+'" aria-label="앱 찾기">'
