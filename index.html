@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="auto" data-size="normal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>앱 사랑방</title>
+<meta name="description" content="목회자들이 함께 만들고 함께 다듬는 앱 갤러리">
+<meta name="theme-color" content="#2E7D6B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="앱 사랑방">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#F5F8F6; --card:#FFFFFF; --ink:#1F2A27; --sub:#5F6D69; --line:#DFE8E4;
+  --pri:#2E7D6B; --pri-ink:#FFFFFF; --pri-soft:#E3F1EC; --blue:#2F6FAE; --blue-soft:#E4EEF8;
+  --warm:#C77A2B; --warm-soft:#FBEFE1; --ok:#2E7D32; --ok-soft:#E5F3E6; --red:#B4433A; --soft:#EEF3F1;
+  --shadow:0 2px 10px rgba(31,42,39,.07);
+}
+html[data-theme="dark"]{
+  --bg:#121816; --card:#1B2321; --ink:#EEF3F1; --sub:#A4B2AE; --line:#2B3633;
+  --pri:#5BB89F; --pri-ink:#0E1715; --pri-soft:#1F3631; --blue:#7FB0E3; --blue-soft:#1D2B3A;
+  --warm:#E3A866; --warm-soft:#33281C; --ok:#7CC781; --ok-soft:#1E3220; --red:#E58A80; --soft:#222C29;
+  --shadow:none;
+}
+@media (prefers-color-scheme: dark){
+  html[data-theme="auto"]{
+    --bg:#121816; --card:#1B2321; --ink:#EEF3F1; --sub:#A4B2AE; --line:#2B3633;
+    --pri:#5BB89F; --pri-ink:#0E1715; --pri-soft:#1F3631; --blue:#7FB0E3; --blue-soft:#1D2B3A;
+    --warm:#E3A866; --warm-soft:#33281C; --ok:#7CC781; --ok-soft:#1E3220; --red:#E58A80; --soft:#222C29;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+html[data-size="big"]{font-size:24px}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;word-break:keep-all;overflow-wrap:anywhere;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+a{color:var(--blue)}
+img{max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:8px;height:60px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em;text-decoration:none;color:var(--ink);margin-right:auto}
+.brand .mark{width:34px;height:34px;border-radius:10px;background:var(--pri);color:var(--pri-ink);display:grid;place-items:center;font-size:1.1rem}
+.icon-btn{min-width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:.85rem;font-weight:700;padding:0 10px;display:inline-flex;align-items:center;gap:4px}
+.icon-btn[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+
+.hero{padding:22px 0 6px}
+.hero h1{font-size:1.75rem;line-height:1.3;margin:0 0 6px;letter-spacing:-.03em}
+.hero p{margin:0;color:var(--sub)}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--pri-soft);border-radius:14px;padding:12px 14px;margin:14px 0 0;font-size:.95rem}
+.demo{background:var(--warm-soft);color:var(--ink);border-radius:14px;padding:10px 14px;font-size:.9rem;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:1.45rem;line-height:1.2;color:var(--pri)}
+.stat span{font-size:.8rem;color:var(--sub)}
+
+.toolbar{display:flex;gap:8px;margin:16px 0 10px}
+.search{flex:1;min-width:0;min-height:50px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 14px}
+.select{flex:none;max-width:42%;min-height:50px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.9rem;font-weight:600;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:0 20px;border-radius:14px;font-weight:700;text-decoration:none;border:1px solid transparent;text-align:center}
+.btn.pri{background:var(--pri);color:var(--pri-ink)}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.line{background:var(--card);border-color:var(--line);color:var(--ink)}
+.btn.soft{background:var(--pri-soft);color:var(--pri)}
+.btn.sm{min-height:42px;padding:0 14px;font-size:.88rem;border-radius:12px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.55}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>.grow{flex:1}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;text-align:left;width:100%;transition:transform .12s}
+.card:active{transform:scale(.99)}
+.thumb{position:relative;aspect-ratio:4/3;background:var(--soft);overflow:hidden}
+@media (max-width:560px){.thumb{aspect-ratio:16/10}}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.ph{width:100%;height:100%;display:grid;place-items:center;font-size:3.2rem}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--sub);white-space:nowrap}
+.thumb .badge{position:absolute;left:10px;top:10px;background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.badge.help{background:var(--warm-soft);color:var(--warm)}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.build{background:var(--blue-soft);color:var(--blue)}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card h3{margin:0;font-size:1.15rem;line-height:1.35}
+.card .desc{margin:0;color:var(--sub);font-size:.95rem;flex:1}
+.meta{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--sub);margin-top:8px;flex-wrap:wrap}
+.meta .who{margin-right:auto;font-weight:600;color:var(--ink)}
+.add-card{border:2px dashed var(--line);background:transparent;box-shadow:none;align-items:center;justify-content:center;min-height:220px;color:var(--pri);font-weight:800;gap:6px}
+.add-card .plus{font-size:2.4rem;line-height:1}
+.empty{text-align:center;color:var(--sub);padding:40px 10px}
+
+section.blk{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+section.blk>h2{font-size:1.15rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+section.blk>h2 small{font-weight:600;color:var(--sub);font-size:.8rem;margin-left:auto}
+.sub{color:var(--sub);font-size:.9rem}
+.back{display:inline-flex;align-items:center;gap:4px;min-height:44px;font-weight:700;color:var(--sub);margin:12px 0 0}
+
+.detail-head{padding:8px 0 0}
+.detail-head h1{font-size:1.7rem;line-height:1.3;margin:8px 0 4px;letter-spacing:-.02em}
+.detail-head .desc{font-size:1.05rem;color:var(--sub);margin:0}
+.shots{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 0 8px;margin:14px 0 4px}
+.shots button{flex:none;scroll-snap-align:start;width:min(78%,360px);aspect-ratio:9/14;border-radius:16px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+.shots img{width:100%;height:100%;object-fit:contain;display:block}
+.cta{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0}
+@media (min-width:640px){.cta{grid-template-columns:2fr 1fr 1fr}}
+ol.howto{margin:0;padding-left:1.4em}
+ol.howto li{margin:4px 0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.fact{background:var(--soft);border-radius:12px;padding:6px 12px;font-size:.88rem}
+.fact b{color:var(--pri)}
+.story{white-space:pre-wrap;margin:0}
+pre.prompt{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.85rem;max-height:260px;overflow:auto;margin:0 0 10px;font-family:inherit}
+.timeline{list-style:none;margin:0;padding:0;border-left:3px solid var(--pri-soft);margin-left:6px}
+.timeline li{position:relative;padding:0 0 14px 18px}
+.timeline li::before{content:"";position:absolute;left:-8px;top:8px;width:13px;height:13px;border-radius:50%;background:var(--pri);border:2px solid var(--card)}
+.timeline .when{font-size:.8rem;color:var(--sub)}
+
+.post{border-top:1px solid var(--line);padding:14px 0}
+.post:first-of-type{border-top:0}
+.post .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;color:var(--sub)}
+.post .hd b{color:var(--ink)}
+.post .tx{margin:6px 0 0;white-space:pre-wrap}
+.post .ft{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.post.done{background:linear-gradient(90deg,var(--ok-soft),transparent 70%);margin:0 -18px;padding:14px 18px}
+.done-note{margin-top:8px;font-size:.9rem;background:var(--ok-soft);color:var(--ok);border-radius:10px;padding:8px 12px}
+.like{min-height:40px;padding:0 12px;border-radius:12px;background:var(--soft);font-size:.88rem;font-weight:700}
+.like.on{background:var(--pri-soft);color:var(--pri)}
+.type-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+@media (min-width:640px){.type-tabs{grid-template-columns:repeat(4,1fr)}}
+.type-tabs button{min-height:48px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:.9rem}
+.type-tabs button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft);color:var(--pri)}
+.tip{font-size:.85rem;color:var(--sub);background:var(--soft);border-radius:12px;padding:10px 12px;margin:8px 0}
+
+label.f{display:block;font-weight:700;margin:16px 0 6px}
+label.f small{font-weight:500;color:var(--sub)}
+.in,textarea.in,select.in{width:100%;min-height:50px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:10px 14px}
+textarea.in{min-height:110px;resize:vertical;line-height:1.55}
+.in:focus{outline:3px solid var(--pri-soft);border-color:var(--pri)}
+.check{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.92rem}
+.check input{width:22px;height:22px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{position:relative;aspect-ratio:3/4;border-radius:12px;border:2px dashed var(--line);background:var(--bg);display:grid;place-items:center;overflow:hidden;font-size:.8rem;color:var(--sub);text-align:center}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .x{position:absolute;right:4px;top:4px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:1rem;z-index:2}
+.slot .tag{position:absolute;left:4px;bottom:4px;background:var(--pri);color:var(--pri-ink);font-size:.7rem;padding:1px 7px;border-radius:6px;z-index:2}
+.slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .wrap{display:flex}
+nav.tabs button{flex:1;padding:8px 0 10px;font-size:.8rem;color:var(--sub);font-weight:700;min-height:64px}
+nav.tabs button span{display:block;font-size:1.45rem;line-height:1.25}
+nav.tabs button[aria-current="page"]{color:var(--pri)}
+
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,20,18,.5);display:flex;align-items:flex-end;justify-content:center}
+.modal .box{background:var(--card);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.modal{align-items:center}.modal .box{border-radius:22px}}
+.modal h2{margin:0 0 4px;font-size:1.25rem;display:flex;align-items:center}
+.modal h2 .x{margin-left:auto;width:44px;height:44px;border-radius:50%;background:var(--soft);font-size:1.2rem}
+.modal .actions{display:flex;gap:8px;margin-top:20px}
+.modal .actions .btn{flex:1}
+.lightbox{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:16px}
+.lightbox img{max-height:92vh;max-width:100%;object-fit:contain;border-radius:8px}
+.qr-box{display:grid;place-items:center;gap:10px;text-align:center;padding:10px 0}
+.qr-box #qr{background:#fff;padding:14px;border-radius:14px}
+.qr-box .url{font-size:.85rem;color:var(--sub);word-break:break-all}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#1F2A27;color:#fff;padding:12px 20px;border-radius:999px;font-size:.92rem;z-index:80;max-width:90%;text-align:center}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+.feed li:first-child{border-top:0}
+.feed .em{flex:none;font-size:1.2rem}
+.feed a{color:inherit;text-decoration:none}
+.feed .t{color:var(--sub);font-size:.8rem}
+details.guide{border-top:1px solid var(--line);padding:10px 0}
+details.guide:first-of-type{border-top:0}
+details.guide summary{font-weight:700;cursor:pointer;min-height:40px;display:flex;align-items:center}
+.two{display:grid;gap:14px}
+@media (min-width:900px){.two{grid-template-columns:1fr 1fr;align-items:start}.two section.blk{margin:0}}
+.vis-hide{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#/"><span class="mark" aria-hidden="true">⛪</span>앱 사랑방</a>
+  <button class="icon-btn" id="btnQR" title="이 갤러리 QR 코드">📱 QR</button>
+  <button class="icon-btn" id="btnSize" aria-pressed="false" title="강의용 큰 글씨">가<b>가</b></button>
+  <button class="icon-btn" id="btnTheme" title="밝게/어둡게">🌓</button>
+</div></header>
+
+<main class="wrap" id="view"></main>
+
+<nav class="tabs" aria-label="메뉴"><div class="wrap">
+  <button data-tab="home"><span>🏠</span>앱 구경</button>
+  <button data-tab="ideas"><span>💡</span>아이디어</button>
+  <button data-tab="learn"><span>🎓</span>배움터</button>
+  <button data-tab="qna"><span>💬</span>묻고 답하기</button>
+</div></nav>
+
+<script src="config.js"></script>
+<script>
+(function(){
+'use strict';
+var CFG=window.APPBANG_CONFIG||{};
+var API_URL=(CFG.API_URL||'').trim();
+var DEMO=!API_URL;
+
+var CATS=[['설교·말씀','📖'],['교육·양육','🌱'],['기도·묵상','🙏'],['예배·찬양','🎵'],['행정·재정','📋'],['교제·소통','🤝'],['기타','✨']];
+var STATUS={'사용 중':['✅','ok'],'만드는 중':['🔨','build'],'도움이 필요해요':['🙋','help']};
+var FTYPE={idea:['💡','아이디어','이런 기능이 있으면 좋겠어요'],fix:['🔧','바꿔 주세요','여기를 이렇게 고치면 더 편하겠어요'],bug:['🐞','오류 발견','눌렀더니 이런 문제가 생겨요'],thanks:['🙏','잘 쓰고 있어요','이 앱 덕분에 이런 도움을 받았어요']};
+var TOOLS=['Claude','ChatGPT','Gemini','Cursor','Copilot'];
+var HOURS=['1시간 이내','반나절','하루','2~3일','일주일','일주일 이상'];
+
+/* ---------- 작은 도구 ---------- */
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function okUrl(u){return /^https?:\/\/[^\s"'<>]+$/i.test(String(u||'').trim())}
+function catEm(c){var f=CATS.find(function(x){return x[0]===c});return f?f[1]:'✨'}
+function ago(s){
+  if(!s)return '';var d=new Date(String(s).replace(' ','T')+':00+09:00');if(isNaN(d))return s;
+  var m=Math.round((Date.now()-d)/60000);
+  if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.round(m/60);if(h<24)return h+'시간 전';
+  var dd=Math.round(h/24);if(dd<8)return dd+'일 전';return String(s).slice(0,10).replace(/-/g,'.');
+}
+function now(){var d=new Date(Date.now()+9*3600000);return d.toISOString().slice(0,16).replace('T',' ')}
+var store={
+  get:function(k,def){try{var v=localStorage.getItem(k);return v==null?def:JSON.parse(v)}catch(e){return def}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+var toastT;
+function toast(msg){var o=$('.toast');if(o)o.remove();var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);clearTimeout(toastT);toastT=setTimeout(function(){t.remove()},2800)}
+function copy(text,msg){
+  function done(){toast(msg||'복사했어요')}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done,fallback)}else fallback();
+  function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){toast('복사가 안 되네요. 길게 눌러 복사해 주세요')}ta.remove()}
+}
+function shot(src,em,alt){return src&&okUrl(src)||String(src||'').indexOf('data:image')===0?'<img src="'+esc(src)+'" alt="'+esc(alt||'')+'" loading="lazy" referrerpolicy="no-referrer">':'<div class="ph" aria-hidden="true">'+esc(em||'✨')+'</div>'}
+
+/* ---------- 상태 ---------- */
+var S={
+  data:store.get('ab_cache',null),
+  me:store.get('ab_me',''),
+  liked:store.get('ab_liked',{}),
+  prefs:store.get('ab_prefs',{size:'normal',theme:'auto'}),
+  q:'',cat:'전체',sort:'new',qf:'all',ftype:'idea',
+  pw:{} /* 이번 방문 동안만 기억하는 앱 비밀번호 */
+};
+function applyPrefs(){
+  document.documentElement.dataset.size=S.prefs.size;
+  document.documentElement.dataset.theme=S.prefs.theme;
+  $('#btnSize').setAttribute('aria-pressed',S.prefs.size==='big');
+}
+function D(){return S.data||{apps:[],updates:[],feedback:[],ideas:[],topics:[],demos:[],questions:[],answers:[],config:{}}}
+function app(id){return D().apps.find(function(a){return a.id===id})}
+function fbOf(id){return D().feedback.filter(function(f){return f.appId===id})}
+function setMe(n){n=String(n||'').trim();if(n&&n!=='익명'){S.me=n;store.set('ab_me',n)}}
+
+/* ---------- 서버 ---------- */
+function api(action,body){
+  body=body||{};
+  if(DEMO)return demoApi(action,body);
+  return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:action},body))})
+    .then(function(r){return r.json()})
+    .then(function(j){if(!j.ok)throw new Error(j.error||'오류가 났어요');return j});
+}
+function load(quiet,keep){
+  return api('all').then(function(j){
+    delete j.ok;S.data=j;if(!DEMO)store.set('ab_cache',j);render(keep);
+  }).catch(function(e){if(!quiet)toast('연결이 안 돼요. 잠시 후 다시 열어 주세요')});
+}
+function send(action,body,okMsg,btn){
+  if(btn){btn.disabled=true;btn.dataset.t=btn.innerHTML;btn.innerHTML='<span class="spin"></span> 보내는 중'}
+  return api(action,body).then(function(j){
+    if(okMsg)toast(okMsg);return load(true).then(function(){return j});
+  }).catch(function(e){toast(e.message||'오류가 났어요');throw e})
+  .finally(function(){if(btn&&btn.isConnected){btn.disabled=false;btn.innerHTML=btn.dataset.t}});
+}
+function like(kind,id,btn){
+  var k=kind+':'+id;
+  if(S.liked[k]){toast('이미 마음을 표시하셨어요');return}
+  S.liked[k]=1;store.set('ab_liked',S.liked);
+  var list=D()[kind]||[],o=list.find(function(x){return x.id===id});if(o)o.likes=(o.likes||0)+1;
+  if(btn){btn.classList.add('on');var n=btn.querySelector('b');if(n)n.textContent=o?o.likes:'';}
+  api('like',{kind:kind,id:id}).catch(function(){});
+}
+
+/* ---------- 체험판 자료 ---------- */
+var demo=null;
+function buildDemo(){
+  var t=now();
+  demo={
+    config:{notice:'12월 모임에서 각자 만든 앱을 5분씩 시연해요. 배움터에서 신청해 주세요!',next:'12월 1일(월) 오후 2시 · 장유중앙교회 교육관',email:''},
+    apps:[
+      {id:'A1',date:'2026-11-10 14:20',name:'우리 구역 출석부',desc:'구역장님이 폰으로 1분 만에 출석을 체크하고, 교역자는 한눈에 봐요',cat:'교육·양육',status:'사용 중',url:'https://example.com/',maker:'김은혜 목사',howto:'구역장님께 주소를 카톡으로 보내 드립니다\n처음 열면 구역을 고르고 이름을 적어요\n예배 후 이름 옆 동그라미만 누르면 출석 끝\n교역자는 [전체 보기]에서 구역별 현황을 봐요',shot1:'',shot2:'',shot3:'',story:'종이 출석부를 매주 걷어 엑셀에 옮기는 일이 너무 번거로워서 시작했어요. Claude에게 "구글 시트에 저장되는 출석 앱"을 부탁했고, 처음엔 화면이 복잡해서 세 번 정도 다시 요청했습니다. 구역장님들 연세를 생각해서 글씨를 크게 해 달라고 한 것이 신의 한 수였어요.',tool:'Claude',hours:'하루',prompt:'구역장님들이 폰으로 출석을 체크하는 앱을 만들어 줘.\n- 구글 시트에 저장되고 GitHub Pages로 배포할 거야\n- 60~70대 구역장님이 쓰시니 글씨는 크게, 버튼은 3개 이하로\n- 교역자용 전체 보기 화면도 필요해',likes:7},
+      {id:'A2',date:'2026-11-14 09:05',name:'주일 설교 노트',desc:'설교를 들으며 받은 은혜를 3줄로 남기고, 한 주 동안 다시 묵상해요',cat:'설교·말씀',status:'만드는 중',url:'https://example.com/',maker:'박소망 목사',howto:'주일 예배 때 앱을 열어요\n오늘 본문과 제목이 자동으로 떠요\n마음에 남은 한 문장, 결단 한 가지를 적어요',shot1:'',shot2:'',shot3:'',story:'ChatGPT로 처음 뼈대를 만들고, 막힌 부분은 Claude에게 물어서 고쳤어요. 아직 지난 노트 모아 보기가 안 됩니다.',tool:'ChatGPT, Claude',hours:'2~3일',prompt:'',likes:3},
+      {id:'A3',date:'2026-11-16 21:40',name:'중보기도 나눔판',desc:'기도 제목을 올리고 "기도했어요"를 눌러 서로 함께 기도해요',cat:'기도·묵상',status:'도움이 필요해요',url:'https://example.com/',maker:'익명',howto:'기도 제목 올리기를 눌러요\n공개 범위(전체/우리 셀)를 골라요\n다른 분 기도 제목에 🙏를 누르면 기도했다는 표시가 돼요',shot1:'',shot2:'',shot3:'',story:'Gemini로 만들어 봤는데, 비공개 기도 제목을 어떻게 지켜야 할지 고민이에요. 조언 부탁드려요!',tool:'Gemini',hours:'반나절',prompt:'',likes:5}
+    ],
+    updates:[{id:'U1',appId:'A1',date:'2026-11-15 10:00',ver:'v2',text:'피드백 반영: 결석 사유를 간단히 적을 수 있게 했어요. 구역 이름 순서도 바꿀 수 있어요.'},{id:'U0',appId:'A1',date:'2026-11-10 14:20',ver:'v1',text:'처음 공개했어요.'}],
+    feedback:[
+      {id:'F1',appId:'A1',date:'2026-11-11 08:30',type:'idea',author:'이사랑 목사',text:'결석하신 분 옆에 사유(병원, 여행 등)를 짧게 적을 수 있으면 심방 계획 세우기 좋겠어요.',likes:4,done:'Y',doneNote:'v2에서 반영했어요. 감사합니다!'},
+      {id:'F2',appId:'A1',date:'2026-11-12 19:10',type:'thanks',author:'최믿음 전도사',text:'저희 교회 청년부에도 바로 써 봤는데 정말 편해요. 글씨 큰 게 특히 좋습니다.',likes:2,done:'',doneNote:''},
+      {id:'F3',appId:'A1',date:'2026-11-16 13:00',type:'fix',author:'정평안 목사',text:'한 달 출석률을 그래프로 보여 주면 제직회 보고 때 쓰기 좋겠습니다.',likes:3,done:'',doneNote:''},
+      {id:'F4',appId:'A3',date:'2026-11-17 07:00',type:'idea',author:'김은혜 목사',text:'비공개 기도 제목은 시트에 따로 저장하고, 화면에는 "비공개 기도 제목 1건"처럼만 보이게 하면 어떨까요?',likes:2,done:'',doneNote:''}
+    ],
+    ideas:[
+      {id:'I1',date:'2026-11-13 11:00',title:'심방 일정 정리 앱',text:'심방 요청을 받아서 지역별로 묶어 주고, 다녀온 뒤 짧은 메모를 남길 수 있으면 좋겠어요.',author:'정평안 목사',likes:6,status:'만드는 중',builder:'박소망 목사'},
+      {id:'I2',date:'2026-11-16 16:30',title:'주보 광고 모아 받기',text:'부서마다 광고를 카톡으로 보내 오는데, 폼으로 받아서 자동으로 정리되면 좋겠어요.',author:'익명',likes:4,status:'제안',builder:''}
+    ],
+    topics:[{id:'T1',date:'2026-11-12 10:00',title:'GitHub Pages에 올리는 법 처음부터',text:'저장소 만들기부터 주소 받기까지 천천히 같이 해 보고 싶어요.',author:'최믿음 전도사',likes:8},{id:'T2',date:'2026-11-15 15:00',title:'구글 시트 연결이 안 될 때 점검법',text:'',author:'이사랑 목사',likes:5}],
+    demos:[{id:'D1',date:'2026-11-15 09:00',app:'우리 구역 출석부',presenter:'김은혜 목사',when:'12월 1일 모임',note:'5분 시연 + 만든 과정'}],
+    questions:[
+      {id:'Q1',date:'2026-11-16 22:10',title:'앱스 스크립트 배포 후 수정했는데 반영이 안 돼요',text:'코드를 고치고 저장했는데 앱에서는 예전 그대로예요. 뭘 놓친 걸까요?',author:'박소망 목사',solved:'Y'},
+      {id:'Q2',date:'2026-11-17 08:40',title:'스크린샷은 어떻게 찍나요?',text:'폰 화면을 캡처해서 올리면 되는 건지, PC 화면이 나은지 궁금합니다.',author:'익명',solved:''}
+    ],
+    answers:[{id:'R1',qId:'Q1',date:'2026-11-16 22:40',author:'김은혜 목사',text:'배포 → 배포 관리 → 연필(수정) → 버전: "새 버전" 선택 → 배포를 눌러야 반영돼요. 주소는 그대로 유지됩니다!',likes:3}]
+  };
+}
+function demoApi(a,b){
+  if(!demo)buildDemo();
+  var t=now(),me=b.author||'익명',id=function(p){return p+Date.now().toString(36)};
+  function ok(x){return new Promise(function(r){setTimeout(function(){r(Object.assign({ok:true},x||{}))},250)})}
+  function fail(m){return new Promise(function(_,j){setTimeout(function(){j(new Error(m))},250)})}
+  function find(k,i){return demo[k].find(function(x){return x.id===i})}
+  switch(a){
+    case 'all':return ok(JSON.parse(JSON.stringify(demo)));
+    case 'upload':return ok({url:b.data});
+    case 'addApp':var ap=Object.assign({},b.app,{id:id('A'),date:t,likes:0,_pw:b.pw});ap.shot1=(b.app.shots||[])[0]||'';ap.shot2=(b.app.shots||[])[1]||'';ap.shot3=(b.app.shots||[])[2]||'';delete ap.shots;demo.apps.push(ap);return ok({id:ap.id});
+    case 'checkPw':var x=find('apps',b.id);return x&&(x._pw?x._pw===b.pw:true)?ok():fail('비밀번호가 맞지 않아요');
+    case 'editApp':var e=find('apps',b.id);if(e._pw&&e._pw!==b.pw)return fail('비밀번호가 맞지 않아요');Object.assign(e,b.app);var sh=b.app.shots||[];e.shot1=sh[0]||'';e.shot2=sh[1]||'';e.shot3=sh[2]||'';delete e.shots;return ok();
+    case 'addUpdate':demo.updates.unshift({id:id('U'),appId:b.appId,date:t,ver:b.ver||'',text:b.text});return ok();
+    case 'addFeedback':demo.feedback.push({id:id('F'),appId:b.appId,date:t,type:b.type,author:me,text:b.text,likes:0,done:'',doneNote:''});return ok();
+    case 'markFeedback':var f=find('feedback',b.id);f.done=b.done?'Y':'';f.doneNote=b.note||'';return ok();
+    case 'addIdea':demo.ideas.push({id:id('I'),date:t,title:b.title,text:b.text,author:me,likes:0,status:'제안',builder:''});return ok();
+    case 'claimIdea':var i=find('ideas',b.id);i.builder=i.builder?i.builder+', '+b.builder:b.builder;i.status='만드는 중';return ok();
+    case 'addTopic':demo.topics.push({id:id('T'),date:t,title:b.title,text:b.text,author:me,likes:0});return ok();
+    case 'addDemo':demo.demos.push({id:id('D'),date:t,app:b.app,presenter:me,when:b.when,note:b.note});return ok();
+    case 'addQuestion':demo.questions.push({id:id('Q'),date:t,title:b.title,text:b.text,author:me,solved:''});return ok();
+    case 'addAnswer':demo.answers.push({id:id('R'),qId:b.qId,date:t,author:me,text:b.text,likes:0});return ok();
+    case 'solveQuestion':find('questions',b.id).solved=b.solved?'Y':'';return ok();
+    case 'like':var l=find(b.kind,b.id);if(l)l.likes=(l.likes||0)+1;return ok();
+  }
+  return fail('알 수 없는 요청');
+}
+
+/* ---------- 화면 이동 ---------- */
+function route(){
+  var p=location.hash.replace(/^#\/?/,'').split('/');
+  return {v:p[0]||'home',id:decodeURIComponent(p[1]||'')};
+}
+function go(h){if(location.hash===h)render();else location.hash=h}
+function render(keep){
+  var saved={};
+  if(keep)$$('#view input[id],#view textarea[id]').forEach(function(el){if(el.type!=='file'&&el.value)saved[el.id]=el.value});
+  var r=route(),v=$('#view'),tab={home:'home',app:'home',ideas:'ideas',learn:'learn',qna:'qna',q:'qna'}[r.v]||'home';
+  $$('nav.tabs button').forEach(function(b){if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(r.v==='app')v.innerHTML=viewApp(r.id);
+  else if(r.v==='ideas')v.innerHTML=viewIdeas();
+  else if(r.v==='learn')v.innerHTML=viewLearn();
+  else if(r.v==='qna')v.innerHTML=viewQna();
+  else if(r.v==='q')v.innerHTML=viewQuestion(r.id);
+  else v.innerHTML=viewHome();
+  var titles={app:(app(r.id)||{}).name,ideas:'아이디어',learn:'배움터',qna:'묻고 답하기',q:'묻고 답하기'};
+  document.title=(titles[r.v]?titles[r.v]+' · ':'')+'앱 사랑방';
+  Object.keys(saved).forEach(function(k){var el=document.getElementById(k);if(el)el.value=saved[k]});
+}
+function loadingOr(html){return S.data?html:'<p class="empty"><span class="spin"></span><br>불러오는 중이에요…</p>'}
+
+/* ---------- 1. 앱 구경 ---------- */
+function viewHome(){
+  var d=D(),c=d.config||{};
+  var apps=d.apps.slice(),q=S.q.trim().toLowerCase();
+  if(S.cat!=='전체')apps=apps.filter(function(a){return S.cat==='🙋 도움 필요'?a.status==='도움이 필요해요':a.cat===S.cat});
+  if(q)apps=apps.filter(function(a){return [a.name,a.desc,a.maker,a.tool].join(' ').toLowerCase().indexOf(q)>=0});
+  apps.sort(function(a,b){
+    if(S.sort==='like')return (b.likes||0)-(a.likes||0);
+    if(S.sort==='talk')return fbOf(b.id).length-fbOf(a.id).length;
+    return String(b.date).localeCompare(String(a.date));
+  });
+  var done=d.feedback.filter(function(f){return f.done==='Y'}).length;
+  var h='<div class="hero"><h1>우리가 만든 앱들</h1><p>목회 현장의 작은 불편을 AI와 함께 풀어 낸 앱을 구경하고, 서로 다듬어 줘요.</p>'
+    +(DEMO?'<div class="demo">🧪 <b>체험판</b>입니다. 마음껏 눌러 보세요. 여기서 쓴 글은 저장되지 않아요.</div>':'')
+    +(c.notice?'<div class="notice"><span>📢</span><div>'+esc(c.notice)+'</div></div>':'')
+    +'<div class="stats"><div class="stat"><b>'+d.apps.length+'</b><span>함께 나눈 앱</span></div><div class="stat"><b>'+d.feedback.length+'</b><span>오간 의견</span></div><div class="stat"><b>'+done+'</b><span>반영된 의견</span></div></div></div>';
+  h+='<div class="toolbar"><input class="search" id="q" type="search" placeholder="🔍 앱 이름, 만든 분, AI 도구로 찾기" value="'+esc(S.q)+'" aria-label="앱 찾기">'
+    +'<select class="select" id="sort" aria-label="정렬"><option value="new">최신순</option><option value="like">공감순</option><option value="talk">의견 많은 순</option></select></div>';
+  h+='<div class="chips" role="group" aria-label="분야">'+['전체'].concat(CATS.map(function(x){return x[0]})).concat(['🙋 도움 필요']).map(function(k){
+    var em=k==='전체'||k.indexOf('🙋')===0?'':catEm(k)+' ';
+    return '<button class="chip" data-cat="'+esc(k)+'" aria-pressed="'+(S.cat===k)+'">'+em+esc(k)+'</button>'}).join('')+'</div>';
+  h+='<div class="grid">';
+  apps.forEach(function(a){
+    var st=STATUS[a.status],fb=fbOf(a.id);
+    h+='<a class="card" href="#/app/'+encodeURIComponent(a.id)+'" style="text-decoration:none;color:inherit">'
+      +'<div class="thumb">'+shot(a.shot1,catEm(a.cat),a.name+' 화면')+(st?'<span class="badge '+st[1]+'">'+st[0]+' '+esc(a.status)+'</span>':'')+'</div>'
+      +'<div class="body"><span class="sub">'+catEm(a.cat)+' '+esc(a.cat||'기타')+'</span><h3>'+esc(a.name)+'</h3><p class="desc">'+esc(a.desc)+'</p>'
+      +'<div class="meta"><span class="who">'+esc(a.maker||'익명')+'</span><span>👍 '+(a.likes||0)+'</span><span>💬 '+fb.length+'</span></div></div></a>';
+  });
+  h+='<button class="card add-card" id="addApp"><span class="plus">＋</span>내 앱 등록하기<span class="sub">완성 전이어도 괜찮아요</span></button></div>';
+  if(S.data&&!apps.length)h+='<p class="empty">찾는 앱이 없어요. 다른 분야를 눌러 보세요.</p>';
+  h+=recent();
+  return loadingOr(h);
+}
+function recent(){
+  var d=D(),items=[];
+  d.feedback.forEach(function(f){var a=app(f.appId);if(a)items.push({t:f.date,em:FTYPE[f.type]?FTYPE[f.type][0]:'💬',h:'#/app/'+f.appId,s:'<b>'+esc(f.author)+'</b>님이 「'+esc(a.name)+'」에 '+(FTYPE[f.type]||FTYPE.idea)[1]+' 의견'})});
+  d.updates.forEach(function(u){var a=app(u.appId);if(a)items.push({t:u.date,em:'🚀',h:'#/app/'+u.appId,s:'「'+esc(a.name)+'」 '+esc(u.ver||'')+' 업데이트'})});
+  d.apps.forEach(function(a){items.push({t:a.date,em:'🎉',h:'#/app/'+a.id,s:'새 앱 「'+esc(a.name)+'」 등록'})});
+  d.answers.forEach(function(r){items.push({t:r.date,em:'💬',h:'#/q/'+r.qId,s:'<b>'+esc(r.author)+'</b>님이 질문에 답했어요'})});
+  items.sort(function(a,b){return String(b.t).localeCompare(String(a.t))});
+  if(!items.length)return '';
+  return '<section class="blk"><h2>🔔 최근 소식</h2><ul class="feed">'+items.slice(0,6).map(function(i){
+    return '<li><span class="em">'+i.em+'</span><a href="'+i.h+'">'+i.s+'<div class="t">'+ago(i.t)+'</div></a></li>'}).join('')+'</ul></section>';
+}
+
+/* ---------- 앱 상세 ---------- */
+function viewApp(id){
+  if(!S.data)return loadingOr('');
+  var a=app(id);
+  if(!a)return '<a class="back" href="#/">← 앱 목록</a><p class="empty">앱을 찾을 수 없어요.</p>';
+  var st=STATUS[a.status],shots=[a.shot1,a.shot2,a.shot3].filter(Boolean),mine=!!S.pw[a.id];
+  var ups=D().updates.filter(function(u){return u.appId===a.id}).sort(function(x,y){return String(y.date).localeCompare(String(x.date))});
+  var fb=fbOf(a.id).sort(function(x,y){return String(y.date).localeCompare(String(x.date))});
+  var open=fb.filter(function(f){return f.done!=='Y'&&f.type!=='thanks'});
+  var h='<a class="back" href="#/">← 앱 목록</a><div class="detail-head">'
+    +'<div class="row"><span class="badge">'+catEm(a.cat)+' '+esc(a.cat||'기타')+'</span>'+(st?'<span class="badge '+st[1]+'">'+st[0]+' '+esc(a.status)+'</span>':'')+'</div>'
+    +'<h1>'+esc(a.name)+'</h1><p class="desc">'+esc(a.desc)+'</p><p class="sub" style="margin:6px 0 0">만든 분 <b style="color:var(--ink)">'+esc(a.maker||'익명')+'</b> · '+ago(a.date)+' 등록</p></div>';
+  if(shots.length)h+='<div class="shots" aria-label="스크린샷">'+shots.map(function(s,i){return '<button data-zoom="'+esc(s)+'" aria-label="스크린샷 '+(i+1)+' 크게 보기">'+shot(s,'',a.name+' 스크린샷 '+(i+1))+'</button>'}).join('')+'</div>';
+  h+='<div class="cta">'+(okUrl(a.url)?'<a class="btn pri" href="'+esc(a.url)+'" target="_blank" rel="noopener">🚀 앱 바로 열기</a>':'')
+    +'<button class="btn line" data-qr="'+esc(a.url)+'" data-qrtitle="'+esc(a.name)+'">📱 QR로 열기</button>'
+    +'<button class="btn line" data-like="apps:'+esc(a.id)+'" '+(S.liked['apps:'+a.id]?'aria-pressed="true"':'')+'>👍 좋아요 <b>'+(a.likes||0)+'</b></button></div>';
+  var how=String(a.howto||'').split('\n').map(function(s){return s.replace(/^\s*(\d+[.)]|[-•·])\s*/,'').trim()}).filter(Boolean);
+  if(how.length)h+='<section class="blk"><h2>📘 이렇게 써요</h2><ol class="howto">'+how.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ol></section>';
+  if(a.story||a.tool||a.hours){
+    h+='<section class="blk"><h2>🛠️ 이렇게 만들었어요</h2><div class="facts">'+(a.tool?'<span class="fact">🤖 <b>'+esc(a.tool)+'</b></span>':'')+(a.hours?'<span class="fact">⏱️ <b>'+esc(a.hours)+'</b> 걸렸어요</span>':'')+'</div>'
+      +(a.story?'<p class="story">'+esc(a.story)+'</p>':'')+'</section>';
+  }
+  if(a.prompt)h+='<section class="blk"><h2>🧩 이렇게 부탁했어요 <small>AI에게 쓴 요청문</small></h2><pre class="prompt">'+esc(a.prompt)+'</pre>'
+    +'<button class="btn soft sm" data-copy="prompt">📋 요청문 복사해서 나도 만들어 보기</button></section>';
+  if(ups.length)h+='<section class="blk"><h2>📈 자라 온 기록</h2><ul class="timeline">'+ups.map(function(u){return '<li><b>'+esc(u.ver||'업데이트')+'</b> <span class="when">'+ago(u.date)+'</span><div style="white-space:pre-wrap">'+esc(u.text)+'</div></li>'}).join('')+'</ul></section>';
+
+  /* 의견 나눔 */
+  h+='<section class="blk" id="fb"><h2>💬 의견 나눔 <small>'+fb.length+'개 · 반영 '+fb.filter(function(f){return f.done==='Y'}).length+'</small></h2>'
+    +'<div class="type-tabs" role="group" aria-label="의견 종류">'+Object.keys(FTYPE).map(function(k){return '<button data-ftype="'+k+'" aria-pressed="'+(S.ftype===k)+'">'+FTYPE[k][0]+' '+FTYPE[k][1]+'</button>'}).join('')+'</div>'
+    +'<textarea class="in" id="fbText" placeholder="'+esc(FTYPE[S.ftype][2])+'"></textarea>'
+    +'<div class="tip">💡 <b>칭찬 한 가지 + 제안 한 가지</b>로 써 주시면 만든 분께 큰 힘이 돼요. 무엇을 눌렀을 때 어떻게 됐는지 적어 주시면 고치기 쉬워요.</div>'
+    +'<div class="row"><input class="in grow" id="fbName" placeholder="이름 (비우면 익명)" value="'+esc(S.me)+'" style="flex:1 1 160px"><button class="btn pri" id="fbSend" data-app="'+esc(a.id)+'">의견 보내기</button></div>';
+  if(fb.length){
+    h+='<div style="margin-top:14px">'+fb.map(function(f){
+      var t=FTYPE[f.type]||FTYPE.idea,dn=f.done==='Y';
+      return '<div class="post'+(dn?' done':'')+'"><div class="hd"><span class="badge">'+t[0]+' '+t[1]+'</span><b>'+esc(f.author)+'</b><span>'+ago(f.date)+'</span>'+(dn?'<span class="badge ok">✅ 반영했어요</span>':'')+'</div>'
+        +'<p class="tx">'+esc(f.text)+'</p>'+(dn&&f.doneNote?'<div class="done-note">만든 분: '+esc(f.doneNote)+'</div>':'')
+        +'<div class="ft"><button class="like'+(S.liked['feedback:'+f.id]?' on':'')+'" data-like="feedback:'+esc(f.id)+'">👍 공감 <b>'+(f.likes||0)+'</b></button>'
+        +(mine&&f.type!=='thanks'?'<button class="btn sm '+(dn?'line':'soft')+'" data-mark="'+esc(f.id)+'" data-done="'+(dn?'':'1')+'">'+(dn?'↩️ 반영 취소':'✅ 반영했어요 표시')+'</button>':'')+'</div></div>';
+    }).join('')+'</div>';
+  }
+  h+='</section>';
+
+  /* 만든 분 도구 */
+  h+='<section class="blk"><h2>🧑‍💻 만든 분 공간</h2>';
+  if(open.length)h+='<p class="sub" style="margin:0 0 10px">아직 반영하지 않은 의견 <b>'+open.length+'개</b>를 AI에게 그대로 붙여 넣을 수 있는 <b>수정 요청문</b>으로 묶어 드려요.</p><button class="btn blue block" data-copy="fix">🤖 의견 묶어서 AI 수정 요청문 복사</button>';
+  if(mine)h+='<div class="row" style="margin-top:10px"><button class="btn line sm grow" id="editApp">✏️ 앱 정보 고치기</button><button class="btn line sm grow" id="addUpdate">🚀 업데이트 소식 올리기</button></div><p class="sub" style="margin:8px 0 0">만든 분으로 들어와 있어요. 의견마다 <b>반영했어요 표시</b>를 할 수 있어요.</p>';
+  else h+='<button class="btn line block" id="owner" style="margin-top:10px">🔑 내가 만든 앱이에요 (비밀번호로 들어가기)</button>';
+  h+='</section>';
+  return h;
+}
+function fixPrompt(a){
+  var open=fbOf(a.id).filter(function(f){return f.done!=='Y'&&f.type!=='thanks'});
+  return '내가 만든 앱 「'+a.name+'」('+a.url+')을 사용해 본 동료 목회자들의 의견이야.\n'
+    +'아래 의견을 하나씩 검토해서, 지금 코드의 구조와 디자인은 그대로 두고 꼭 필요한 부분만 고쳐 줘.\n'
+    +'고치기 어렵거나 의견끼리 부딪히는 것은 먼저 나에게 물어봐 줘. 수정한 뒤에는 무엇을 바꿨는지 쉬운 말로 정리해 줘.\n\n'
+    +open.map(function(f,i){return (i+1)+'. ['+(FTYPE[f.type]||FTYPE.idea)[1]+'] '+f.text+(f.likes?' (공감 '+f.likes+')':'')}).join('\n')
+    +'\n\n※ 이 앱은 GitHub Pages(index.html)와 구글 시트(Apps Script)로 되어 있어. 코드 전체를 다시 보여 줘.';
+}
+
+/* ---------- 앱 등록·수정 ---------- */
+function appForm(a){
+  var edit=!!a;a=a||{cat:'',status:'사용 중',maker:S.me};
+  var shots=[a.shot1,a.shot2,a.shot3].filter(Boolean);
+  var anon=edit&&a.maker==='익명';
+  var tools=String(a.tool||'').split(/,\s*/).filter(Boolean);
+  var extra=tools.filter(function(t){return TOOLS.indexOf(t)<0}).join(', ');
+  var h='<label class="f" for="fName">앱 이름 *</label><input class="in" id="fName" maxlength="40" value="'+esc(a.name)+'" placeholder="예: 우리 구역 출석부">'
+   +'<label class="f" for="fDesc">한 줄 설명 * <small>무엇을 해결해 주는 앱인가요?</small></label><input class="in" id="fDesc" maxlength="100" value="'+esc(a.desc)+'" placeholder="예: 구역장님이 1분 만에 출석을 체크해요">'
+   +'<label class="f" for="fUrl">앱 주소 * <small>GitHub Pages 주소</small></label><input class="in" id="fUrl" type="url" inputmode="url" value="'+esc(a.url)+'" placeholder="https://아이디.github.io/앱이름/">'
+   +'<label class="f">분야</label><div class="chips" style="flex-wrap:wrap" id="fCat">'+CATS.map(function(c){return '<button type="button" class="chip" data-v="'+esc(c[0])+'" aria-pressed="'+(a.cat===c[0])+'">'+c[1]+' '+esc(c[0])+'</button>'}).join('')+'</div>'
+   +'<label class="f">지금 상태</label><div class="chips" style="flex-wrap:wrap" id="fStatus">'+Object.keys(STATUS).map(function(k){return '<button type="button" class="chip" data-v="'+esc(k)+'" aria-pressed="'+(a.status===k)+'">'+STATUS[k][0]+' '+esc(k)+'</button>'}).join('')+'</div>'
+   +'<label class="f" for="fMaker">만든 분</label><input class="in" id="fMaker" maxlength="30" value="'+esc(anon?S.me:a.maker)+'" placeholder="예: 홍길동 목사"><label class="check"><input type="checkbox" id="fAnon"'+(anon?' checked':'')+'> 이름 대신 "익명"으로 보여 주세요</label>'
+   +'<label class="f">스크린샷 <small>최대 3장 · 첫 장이 대표 사진</small></label><div class="slots" id="slots"></div>'
+   +'<label class="f" for="fHow">사용법 <small>한 줄에 하나씩, 3~5줄</small></label><textarea class="in" id="fHow" placeholder="주소를 열어요&#10;이름을 적고 시작을 눌러요&#10;…">'+esc(a.howto)+'</textarea>'
+   +'<label class="f">어떤 AI 도구로 만들었나요?</label><div class="chips" style="flex-wrap:wrap" id="fTool">'+TOOLS.map(function(t){return '<button type="button" class="chip" data-v="'+t+'" aria-pressed="'+(tools.indexOf(t)>=0)+'">'+t+'</button>'}).join('')+'</div>'
+   +'<input class="in" id="fTool2" placeholder="그 밖의 도구 (선택)" value="'+esc(extra)+'" style="margin-top:6px">'
+   +'<label class="f" for="fHours">대략 걸린 시간</label><select class="in" id="fHours"><option value="">선택해 주세요</option>'+HOURS.map(function(x){return '<option'+(a.hours===x?' selected':'')+'>'+x+'</option>'}).join('')+'</select>'
+   +'<label class="f" for="fStory">이렇게 만들었어요 <small>왜 만들었고, 어디서 막혔고, 어떻게 풀었나요?</small></label><textarea class="in" id="fStory" placeholder="한 단락이면 충분해요. 막혔던 이야기가 다른 분들께 제일 도움이 돼요.">'+esc(a.story)+'</textarea>'
+   +'<label class="f" for="fPrompt">AI에게 처음 부탁한 요청문 <small>(선택) 나누면 다른 분이 따라 만들 수 있어요</small></label><textarea class="in" id="fPrompt" placeholder="예: 구역장님들이 폰으로 출석을 체크하는 앱을 만들어 줘…">'+esc(a.prompt)+'</textarea>'
+   +(edit?'<label class="f" for="fPw2">새 비밀번호 <small>(바꿀 때만)</small></label><input class="in" id="fPw2" type="password" autocomplete="new-password">'
+         :'<label class="f" for="fPw">비밀번호 * <small>4자리 이상 · 나중에 고치거나 의견에 "반영" 표시할 때 써요</small></label><input class="in" id="fPw" type="password" inputmode="numeric" autocomplete="new-password">');
+  modal(edit?'✏️ 앱 정보 고치기':'＋ 내 앱 등록하기',h,edit?'고친 내용 저장':'등록하기',function(btn){
+    var pick=function(sel){var b=$(sel+' [aria-pressed="true"]');return b?b.dataset.v:''};
+    var tl=$$('#fTool [aria-pressed="true"]').map(function(b){return b.dataset.v});var t2=$('#fTool2').value.trim();if(t2)tl.push(t2);
+    var data={name:$('#fName').value.trim(),desc:$('#fDesc').value.trim(),url:$('#fUrl').value.trim(),cat:pick('#fCat')||'기타',status:pick('#fStatus')||'사용 중',
+      maker:$('#fAnon').checked?'익명':($('#fMaker').value.trim()||'익명'),howto:$('#fHow').value,tool:tl.join(', '),hours:$('#fHours').value,story:$('#fStory').value,prompt:$('#fPrompt').value,shots:slotShots.filter(Boolean)};
+    if(!data.name)return toast('앱 이름을 적어 주세요'),$('#fName').focus(),Promise.reject();
+    if(!data.desc)return toast('한 줄 설명을 적어 주세요'),$('#fDesc').focus(),Promise.reject();
+    if(!/^https?:\/\//i.test(data.url)&&data.url)data.url='https://'+data.url;
+    if(!okUrl(data.url))return toast('앱 주소를 https:// 로 시작하게 적어 주세요'),$('#fUrl').focus(),Promise.reject();
+    if(slotBusy)return toast('사진을 올리는 중이에요. 잠시만요'),Promise.reject();
+    if(!$('#fAnon').checked)setMe(data.maker);
+    if(edit){
+      var np=$('#fPw2').value.trim();
+      return send('editApp',{id:a.id,pw:S.pw[a.id],app:data,newPw:np},'고친 내용을 저장했어요',btn).then(function(){if(np)S.pw[a.id]=np});
+    }
+    var pw=$('#fPw').value.trim();
+    if(pw.length<4)return toast('비밀번호를 4자리 이상 정해 주세요'),$('#fPw').focus(),Promise.reject();
+    return send('addApp',{app:data,pw:pw},'등록했어요! 의견을 기다려 보세요 🎉',btn).then(function(j){S.pw[j.id]=pw;go('#/app/'+encodeURIComponent(j.id))});
+  });
+  slotShots=shots.slice();slotBusy=0;drawSlots();
+  ['#fCat','#fStatus'].forEach(function(s){$(s).addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;$$(s+' .chip').forEach(function(x){x.setAttribute('aria-pressed',x===b)})})});
+  $('#fTool').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')});
+}
+var slotShots=[],slotBusy=0;
+function drawSlots(){
+  var w=$('#slots');if(!w)return;
+  var h='';
+  for(var i=0;i<3;i++){
+    var s=slotShots[i];
+    if(s==='…')h+='<div class="slot"><span><span class="spin"></span><br>올리는 중</span></div>';
+    else if(s)h+='<div class="slot"><img src="'+esc(s)+'" alt="스크린샷 '+(i+1)+'" referrerpolicy="no-referrer">'+(i===0?'<span class="tag">대표</span>':'')+'<button type="button" class="x" data-del="'+i+'" aria-label="사진 빼기">✕</button></div>';
+    else{h+='<label class="slot"><span>📷<br>사진 '+(i+1)+'<br>고르기</span><input type="file" accept="image/*" data-slot="'+i+'"></label>';break;}
+  }
+  w.innerHTML=h;
+  $$('#slots [data-del]').forEach(function(b){b.onclick=function(){slotShots.splice(+b.dataset.del,1);drawSlots()}});
+  $$('#slots input[type=file]').forEach(function(inp){inp.onchange=function(){
+    var f=inp.files[0];if(!f)return;var i=+inp.dataset.slot;
+    slotShots[i]='…';slotBusy++;drawSlots();
+    shrink(f).then(function(data){return api('upload',{data:data})}).then(function(j){slotShots[i]=j.url})
+      .catch(function(e){slotShots.splice(i,1);toast(e&&e.message?e.message:'사진을 올리지 못했어요')})
+      .finally(function(){slotBusy--;drawSlots()});
+  }});
+}
+function shrink(file){
+  return new Promise(function(res,rej){
+    var u=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){
+      var m=1400,r=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');
+      c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);
+      var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',0.82));
+    };
+    img.onerror=function(){URL.revokeObjectURL(u);rej(new Error('사진 파일을 읽지 못했어요'))};
+    img.src=u;
+  });
+}
+function askPw(a){
+  modal('🔑 만든 분 확인','<p class="sub">「'+esc(a.name)+'」을 등록할 때 정한 비밀번호를 넣어 주세요.<br>잊으셨다면 모임 담당자께 말씀해 주세요.'+(DEMO?'<br>🧪 체험판에서는 아무 숫자나 넣어도 돼요.':'')+'</p><label class="f" for="pw">비밀번호</label><input class="in" id="pw" type="password" inputmode="numeric" autocomplete="current-password">','들어가기',function(btn){
+    var pw=$('#pw').value.trim();if(!pw)return toast('비밀번호를 넣어 주세요'),Promise.reject();
+    btn.disabled=true;
+    return api('checkPw',{id:a.id,pw:pw}).then(function(){S.pw[a.id]=pw;toast('어서 오세요! 이제 반영 표시를 할 수 있어요');render()})
+      .catch(function(e){btn.disabled=false;toast(e.message);throw e});
+  });
+}
+function updateForm(a){
+  var n=D().updates.filter(function(u){return u.appId===a.id}).length;
+  modal('🚀 업데이트 소식','<p class="sub">무엇이 좋아졌나요? 누구의 의견을 반영했는지 적어 주시면 더 좋아요.</p><label class="f" for="uv">버전 <small>(선택)</small></label><input class="in" id="uv" value="v'+(n+2)+'" maxlength="20"><label class="f" for="ut">바뀐 점</label><textarea class="in" id="ut" placeholder="예: 정평안 목사님 의견대로 월별 출석 그래프를 넣었어요."></textarea><label class="f">상태도 바꿀까요?</label><select class="in" id="us"><option value="">그대로</option>'+Object.keys(STATUS).map(function(k){return '<option>'+k+'</option>'}).join('')+'</select>','올리기',function(btn){
+    var t=$('#ut').value.trim();if(!t)return toast('바뀐 점을 적어 주세요'),Promise.reject();
+    var st=$('#us').value;
+    return send('addUpdate',{appId:a.id,pw:S.pw[a.id],ver:$('#uv').value.trim(),text:t},st?null:'업데이트 소식을 올렸어요',btn).then(function(){
+      if(st){var cur=app(a.id),data={name:cur.name,desc:cur.desc,url:cur.url,cat:cur.cat,status:st,maker:cur.maker,howto:cur.howto,tool:cur.tool,hours:cur.hours,story:cur.story,prompt:cur.prompt,shots:[cur.shot1,cur.shot2,cur.shot3].filter(Boolean)};
+        return send('editApp',{id:a.id,pw:S.pw[a.id],app:data},'업데이트 소식을 올렸어요')}
+    });
+  });
+}
+function markForm(fid,done){
+  var f=D().feedback.find(function(x){return x.id===fid});if(!f)return;
+  if(!done)return send('markFeedback',{id:fid,pw:S.pw[f.appId],done:false},'반영 표시를 취소했어요');
+  modal('✅ 반영했어요','<p class="sub">「'+esc(f.text.slice(0,60))+(f.text.length>60?'…':'')+'」</p><label class="f" for="mn">의견 주신 분께 한마디 <small>(선택)</small></label><input class="in" id="mn" maxlength="300" placeholder="예: v3에서 반영했어요. 감사합니다!">','반영 표시하기',function(btn){
+    return send('markFeedback',{id:fid,pw:S.pw[f.appId],done:true,note:$('#mn').value.trim()},'반영 표시를 했어요. 의견 주신 분이 기뻐하실 거예요',btn);
+  });
+}
+
+/* ---------- 2. 아이디어 ---------- */
+function viewIdeas(){
+  var d=D(),c=d.config||{};
+  var list=d.ideas.slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)||String(b.date).localeCompare(String(a.date))});
+  var ST={'제안':['💭','sub'],'만드는 중':['🔨','build'],'완성':['✅','ok']};
+  var h='<div class="hero"><h1>나는 이런 앱 만들고 싶어요</h1><p>필요한 앱을 적어 두면, 같은 고민을 가진 분이 "나도 필요해요"를 누르고, 누군가는 "제가 만들어 볼게요"로 손을 들어요.</p></div>'
+    +'<section class="blk"><h2>✍️ 아이디어 올리기</h2>'
+    +'<label class="f" for="iT">어떤 앱인가요?</label><input class="in" id="iT" maxlength="80" placeholder="예: 심방 일정을 지역별로 묶어 주는 앱">'
+    +'<label class="f" for="iX">어떤 불편을 해결하나요? 누가 쓰나요?</label><textarea class="in" id="iX" placeholder="지금은 이렇게 해서 불편하다 → 이렇게 되면 좋겠다"></textarea>'
+    +'<div class="row" style="margin-top:10px"><input class="in grow" id="iN" placeholder="이름 (비우면 익명)" value="'+esc(S.me)+'" style="flex:1 1 160px"><button class="btn pri" id="iSend">아이디어 올리기</button></div>'
+    +(c.email?'<p class="sub" style="margin:10px 0 0">글로 쓰기 어려우시면 <a href="mailto:'+esc(c.email)+'?subject='+encodeURIComponent('[앱 사랑방] 앱 아이디어')+'">메일로 보내 주셔도 돼요</a>.</p>':'')+'</section>';
+  h+='<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">';
+  list.forEach(function(i){
+    var st=ST[i.status]||ST['제안'];
+    h+='<section class="blk" style="margin:0"><div class="row"><span class="badge '+st[1]+'">'+st[0]+' '+esc(i.status||'제안')+'</span><span class="sub">'+esc(i.author)+' · '+ago(i.date)+'</span></div>'
+      +'<h3 style="margin:8px 0 4px;font-size:1.15rem">'+esc(i.title)+'</h3>'+(i.text?'<p class="tx" style="margin:0;white-space:pre-wrap">'+esc(i.text)+'</p>':'')
+      +(i.builder?'<p class="sub" style="margin:8px 0 0">🔨 만드는 분: <b style="color:var(--ink)">'+esc(i.builder)+'</b></p>':'')
+      +'<div class="ft row" style="margin-top:12px"><button class="like'+(S.liked['ideas:'+i.id]?' on':'')+'" data-like="ideas:'+esc(i.id)+'">🙋 나도 필요해요 <b>'+(i.likes||0)+'</b></button>'
+      +(i.status!=='완성'?'<button class="btn soft sm" data-claim="'+esc(i.id)+'">🔨 제가 만들어 볼게요</button>':'')
+      +'<button class="btn line sm" data-copy="idea:'+esc(i.id)+'">🤖 AI 요청문</button></div></section>';
+  });
+  h+='</div>';
+  if(S.data&&!list.length)h+='<p class="empty">첫 아이디어를 올려 주세요!</p>';
+  return loadingOr(h);
+}
+function ideaPrompt(i){
+  return '목회 현장에서 쓸 웹앱을 만들고 싶어. 나는 코딩 초보야. 하나씩 차근차근 알려 줘.\n\n'
+   +'■ 앱 아이디어: '+i.title+'\n'+(i.text?'■ 해결하고 싶은 불편: '+i.text+'\n':'')
+   +'\n■ 만드는 방식\n- 화면은 index.html 한 파일로 만들어 GitHub Pages에 올릴 거야\n- 자료는 구글 시트에 저장하고, 구글 앱스 스크립트(Code.gs)로 연결해 줘\n- 폰에서 먼저 쓰기 좋게, 글씨는 크고 버튼은 단순하게\n\n'
+   +'■ 먼저 해 줄 일\n1) 꼭 필요한 기능 3가지만 골라서 제안해 줘\n2) 내가 고르면 그때 코드를 만들어 줘\n3) 구글 시트 준비와 배포 방법을 순서대로 알려 줘';
+}
+
+/* ---------- 3. 배움터 ---------- */
+function viewLearn(){
+  var d=D(),c=d.config||{};
+  var tps=d.topics.slice().sort(function(a,b){return (b.likes||0)-(a.likes||0)});
+  var h='<div class="hero"><h1>함께 배우는 자리</h1><p>듣고 싶은 강의 주제에 투표하고, 다음 모임에서 내 앱을 시연해 보세요.</p>'
+    +(c.next?'<div class="notice"><span>🗓️</span><div><b>다음 모임</b><br>'+esc(c.next)+'</div></div>':'')+'</div><div class="two">';
+  h+='<section class="blk"><h2>🎓 듣고 싶은 강의 주제</h2>'
+    +'<div class="row"><input class="in grow" id="tT" maxlength="80" placeholder="예: 구글 시트 연결이 안 될 때 점검법" style="flex:1 1 220px"></div>'
+    +'<textarea class="in" id="tX" placeholder="조금 더 자세히 (선택)" style="min-height:70px;margin-top:8px"></textarea>'
+    +'<div class="row" style="margin-top:8px"><input class="in grow" id="tN" placeholder="이름 (비우면 익명)" value="'+esc(S.me)+'" style="flex:1 1 140px"><button class="btn pri" id="tSend">주제 신청</button></div>'
+    +'<div style="margin-top:12px">'+tps.map(function(t,i){
+      return '<div class="post"><div class="hd"><b>'+(i<3?['🥇','🥈','🥉'][i]+' ':'')+esc(t.title)+'</b></div>'+(t.text?'<p class="tx sub">'+esc(t.text)+'</p>':'')
+        +'<div class="ft"><button class="like'+(S.liked['topics:'+t.id]?' on':'')+'" data-like="topics:'+esc(t.id)+'">🙋 저도 듣고 싶어요 <b>'+(t.likes||0)+'</b></button><span class="sub">'+esc(t.author)+' · '+ago(t.date)+'</span></div></div>'}).join('')
+    +(tps.length?'':'<p class="sub">아직 신청된 주제가 없어요.</p>')+'</div></section>';
+  h+='<section class="blk"><h2>🎤 시연 신청</h2><p class="sub" style="margin:0 0 8px">5분이면 충분해요. 완성되지 않은 앱도 환영합니다. "여기서 막혔어요"도 좋은 시연이에요.</p>'
+    +'<label class="f" for="dA">시연할 앱</label><input class="in" id="dA" list="appList" maxlength="60" placeholder="앱 이름"><datalist id="appList">'+d.apps.map(function(a){return '<option value="'+esc(a.name)+'">'}).join('')+'</datalist>'
+    +'<label class="f" for="dW">언제 하고 싶으세요?</label><input class="in" id="dW" maxlength="60" placeholder="'+esc(c.next?'예: 다음 모임':'예: 12월 모임')+'">'
+    +'<label class="f" for="dX">하고 싶은 이야기 <small>(선택)</small></label><input class="in" id="dX" maxlength="200" placeholder="예: 만든 과정 + 막힌 부분 질문">'
+    +'<div class="row" style="margin-top:10px"><input class="in grow" id="dN" placeholder="발표자 이름" value="'+esc(S.me)+'" style="flex:1 1 140px"><button class="btn pri" id="dSend">시연 신청</button></div>'
+    +(d.demos.length?'<h3 style="margin:18px 0 4px;font-size:1rem">신청 목록</h3>'+d.demos.map(function(x){return '<div class="post"><div class="hd"><b>🎤 '+esc(x.app)+'</b><span>'+esc(x.presenter)+'</span>'+(x.when?'<span class="badge build">'+esc(x.when)+'</span>':'')+'</div>'+(x.note?'<p class="tx sub">'+esc(x.note)+'</p>':'')+'</div>'}).join(''):'')
+    +'</section></div>';
+  h+='<section class="blk"><h2>🧭 처음 시작하는 분께</h2>'
+    +'<details class="guide"><summary>① 불편 한 가지를 고르세요</summary><p>"매주 손으로 하는 일 중 귀찮은 것"이 최고의 앱 아이디어예요. 아이디어 탭에서 다른 분들의 고민도 구경해 보세요.</p></details>'
+    +'<details class="guide"><summary>② AI에게 부탁하세요</summary><p>아이디어 카드의 <b>🤖 AI 요청문</b>을 복사해 Claude나 ChatGPT에 붙여 넣으면 시작할 수 있어요. 한 번에 다 만들려 하지 말고, 기능 하나씩 늘려 가세요.</p></details>'
+    +'<details class="guide"><summary>③ GitHub Pages에 올리세요</summary><p>저장소를 만들고 index.html을 올린 뒤 Settings → Pages에서 main 브랜치를 고르면 주소가 생겨요. 1~2분 기다리면 열립니다.</p></details>'
+    +'<details class="guide"><summary>④ 사랑방에 자랑하세요</summary><p>완성 전이어도 괜찮아요. 상태를 <b>🙋 도움이 필요해요</b>로 두면 다른 분들이 먼저 찾아와 의견을 남겨 줍니다.</p></details>'
+    +'<details class="guide"><summary>⑤ 의견을 반영하고 기록하세요</summary><p>앱 화면의 <b>🤖 의견 묶어서 AI 수정 요청문</b>을 누르면 받은 의견이 한 번에 정리돼요. 고친 뒤 <b>반영했어요</b>를 누르고 업데이트 소식을 남기면, 의견 준 분께도 기쁨이 됩니다.</p></details></section>';
+  return loadingOr(h);
+}
+
+/* ---------- 4. 묻고 답하기 ---------- */
+function viewQna(){
+  var d=D();
+  var cnt=function(q){return d.answers.filter(function(r){return r.qId===q.id}).length};
+  var qs=d.questions.slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date))});
+  if(S.qf==='wait')qs=qs.filter(function(q){return !cnt(q)&&q.solved!=='Y'});
+  var waiting=d.questions.filter(function(q){return !cnt(q)&&q.solved!=='Y'}).length;
+  var h='<div class="hero"><h1>묻고 답하기</h1><p>막힌 곳은 누구나 있어요. 오류 메시지나 화면을 그대로 적어 주시면 함께 풀어 드려요.</p></div>'
+    +'<section class="blk"><h2>🙋 질문하기</h2><input class="in" id="qT" maxlength="100" placeholder="한 줄 질문 (예: 시트에 저장이 안 돼요)">'
+    +'<textarea class="in" id="qX" style="margin-top:8px" placeholder="무엇을 하려고 했고, 무엇을 눌렀고, 어떤 메시지가 떴는지 적어 주세요."></textarea>'
+    +'<div class="row" style="margin-top:8px"><input class="in grow" id="qN" placeholder="이름 (비우면 익명)" value="'+esc(S.me)+'" style="flex:1 1 140px"><button class="btn pri" id="qSend">질문 올리기</button></div></section>'
+    +'<div class="chips"><button class="chip" data-qf="all" aria-pressed="'+(S.qf==='all')+'">전체 '+d.questions.length+'</button><button class="chip" data-qf="wait" aria-pressed="'+(S.qf==='wait')+'">⏳ 답을 기다려요 '+waiting+'</button></div>';
+  h+='<section class="blk">'+(qs.length?qs.map(function(q){var n=cnt(q);
+    return '<a class="post" href="#/q/'+encodeURIComponent(q.id)+'" style="display:block;color:inherit;text-decoration:none"><div class="hd">'
+      +(q.solved==='Y'?'<span class="badge ok">✅ 해결</span>':n?'<span class="badge build">💬 답변 '+n+'</span>':'<span class="badge help">⏳ 답을 기다려요</span>')
+      +'<span>'+esc(q.author)+' · '+ago(q.date)+'</span></div><p class="tx" style="font-weight:700">'+esc(q.title)+'</p></a>'}).join('')
+    :'<p class="sub" style="margin:0">'+(S.qf==='wait'?'기다리는 질문이 없어요. 모두 답을 받았어요 🙌':'아직 질문이 없어요.')+'</p>')+'</section>';
+  return loadingOr(h);
+}
+function viewQuestion(id){
+  if(!S.data)return loadingOr('');
+  var q=D().questions.find(function(x){return x.id===id});
+  if(!q)return '<a class="back" href="#/qna">← 질문 목록</a><p class="empty">질문을 찾을 수 없어요.</p>';
+  var ans=D().answers.filter(function(r){return r.qId===id}).sort(function(a,b){return String(a.date).localeCompare(String(b.date))});
+  return '<a class="back" href="#/qna">← 질문 목록</a><section class="blk"><div class="hd row sub">'+(q.solved==='Y'?'<span class="badge ok">✅ 해결</span>':'')+'<span>'+esc(q.author)+' · '+ago(q.date)+'</span></div>'
+    +'<h1 style="font-size:1.4rem;margin:8px 0">'+esc(q.title)+'</h1>'+(q.text?'<p class="story">'+esc(q.text)+'</p>':'')
+    +'<div class="row" style="margin-top:12px"><button class="btn line sm" data-solve="'+esc(q.id)+'" data-v="'+(q.solved==='Y'?'':'1')+'">'+(q.solved==='Y'?'↩️ 아직 해결 안 됐어요':'✅ 해결됐어요 (질문하신 분)')+'</button></div></section>'
+    +'<section class="blk"><h2>💬 답변 '+ans.length+'</h2>'+ans.map(function(r){
+      return '<div class="post"><div class="hd"><b>'+esc(r.author)+'</b><span>'+ago(r.date)+'</span></div><p class="tx">'+esc(r.text)+'</p>'
+        +'<div class="ft"><button class="like'+(S.liked['answers:'+r.id]?' on':'')+'" data-like="answers:'+esc(r.id)+'">🙏 도움됐어요 <b>'+(r.likes||0)+'</b></button></div></div>'}).join('')
+    +'<label class="f" for="aX">답변 남기기</label><textarea class="in" id="aX" placeholder="아는 만큼만 적어도 큰 도움이 돼요. 정확하지 않으면 &quot;제 경우엔…&quot;이라고 적어 주세요."></textarea>'
+    +'<div class="row" style="margin-top:8px"><input class="in grow" id="aN" placeholder="이름 (비우면 익명)" value="'+esc(S.me)+'" style="flex:1 1 140px"><button class="btn pri" id="aSend" data-q="'+esc(q.id)+'">답변 올리기</button></div></section>';
+}
+
+/* ---------- 모달·QR·확대 ---------- */
+function modal(title,body,okText,onOk){
+  closeModal();
+  var m=document.createElement('div');m.className='modal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');
+  m.innerHTML='<div class="box"><h2>'+title+'<button class="x" aria-label="닫기">✕</button></h2>'+body+(okText?'<div class="actions"><button class="btn line" data-close>취소</button><button class="btn pri" data-ok>'+okText+'</button></div>':'')+'</div>';
+  document.body.appendChild(m);document.body.style.overflow='hidden';
+  m.addEventListener('click',function(e){if(e.target===m||e.target.closest('.x')||e.target.closest('[data-close]'))closeModal()});
+  var ok=$('[data-ok]',m);
+  if(ok)ok.onclick=function(){var p=onOk(ok);if(p&&p.then)p.then(closeModal,function(){})};
+  var f=$('input,textarea',m);if(f&&matchMedia('(min-width:700px)').matches)f.focus();
+  return m;
+}
+function closeModal(){var m=$('.modal');if(m){m.remove();document.body.style.overflow=''}}
+var qrLib=null;
+function showQR(url,title){
+  modal('📱 '+esc(title||'앱 사랑방'),'<div class="qr-box"><p class="sub" style="margin:0">폰 카메라로 비추면 바로 열려요</p><div id="qr"><span class="spin"></span></div><div class="url">'+esc(url)+'</div><button class="btn line sm" id="qrCopy">🔗 주소 복사</button>'+(navigator.share?'<button class="btn soft sm" id="qrShare">📤 카톡 등으로 보내기</button>':'')+'</div>');
+  $('#qrCopy').onclick=function(){copy(url,'주소를 복사했어요')};
+  if($('#qrShare'))$('#qrShare').onclick=function(){navigator.share({title:title||'앱 사랑방',url:url}).catch(function(){})};
+  (qrLib||(qrLib=new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';s.onload=res;s.onerror=function(){qrLib=null;rej()};document.head.appendChild(s)})))
+    .then(function(){var b=$('#qr');if(!b)return;b.innerHTML='';var sz=Math.min(300,window.innerWidth-120);new window.QRCode(b,{text:url,width:sz,height:sz,correctLevel:window.QRCode.CorrectLevel.M})})
+    .catch(function(){var b=$('#qr');if(b)b.innerHTML='<p class="sub">QR을 불러오지 못했어요. 주소를 복사해 주세요.</p>'});
+}
+function zoom(src){
+  var l=document.createElement('div');l.className='lightbox';l.innerHTML='<img src="'+esc(src)+'" alt="스크린샷 크게 보기" referrerpolicy="no-referrer">';
+  l.onclick=function(){l.remove()};document.body.appendChild(l);
+}
+function baseUrl(){return location.href.split('#')[0]}
+
+/* ---------- 누르기 처리 ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('button,a');if(!t)return;
+  var id=t.id,ds=t.dataset;
+  if(ds.tab){go(ds.tab==='home'?'#/':'#/'+ds.tab);window.scrollTo(0,0);return}
+  if(ds.cat){S.cat=ds.cat;render();return}
+  if(ds.qf){S.qf=ds.qf;render();return}
+  if(ds.ftype){S.ftype=ds.ftype;$$('[data-ftype]').forEach(function(b){b.setAttribute('aria-pressed',b===t)});var ta=$('#fbText');if(ta)ta.placeholder=FTYPE[ds.ftype][2];return}
+  if(ds.like){var p=ds.like.split(':');like(p[0],p[1],t);return}
+  if(ds.zoom){zoom(ds.zoom);return}
+  if(ds.qr){showQR(ds.qr,ds.qrtitle);return}
+  if(ds.mark){markForm(ds.mark,!!ds.done);return}
+  if(ds.solve){send('solveQuestion',{id:ds.solve,solved:!!ds.v},ds.v?'해결 표시를 했어요. 답해 주신 분께 감사!':'해결 표시를 풀었어요',t);return}
+  if(ds.claim){
+    var idea=D().ideas.find(function(x){return x.id===ds.claim});
+    modal('🔨 제가 만들어 볼게요','<p class="sub">「'+esc(idea.title)+'」<br>여러 분이 함께 손들어도 괜찮아요. 완성되면 앱 구경 탭에 등록해 주세요!</p><label class="f" for="cb">이름</label><input class="in" id="cb" value="'+esc(S.me)+'" maxlength="30">','손들기',function(btn){
+      var n=$('#cb').value.trim();if(!n)return toast('이름을 적어 주세요'),Promise.reject();setMe(n);
+      return send('claimIdea',{id:ds.claim,builder:n},'응원합니다! 🙌',btn)});
+    return;
+  }
+  if(ds.copy){
+    var r=route(),a=app(r.id);
+    if(ds.copy==='prompt'&&a)copy(a.prompt,'요청문을 복사했어요. AI 창에 붙여 넣고 내 상황에 맞게 고쳐 보세요');
+    else if(ds.copy==='fix'&&a)copy(fixPrompt(a),'수정 요청문을 복사했어요. Claude나 ChatGPT에 붙여 넣으세요');
+    else if(ds.copy.indexOf('idea:')===0){var i=D().ideas.find(function(x){return x.id===ds.copy.slice(5)});if(i)copy(ideaPrompt(i),'AI 요청문을 복사했어요. Claude나 ChatGPT에 붙여 넣으세요')}
+    return;
+  }
+  var r2=route(),cur=app(r2.id);
+  switch(id){
+    case 'btnQR':showQR(baseUrl(),'앱 사랑방');return;
+    case 'btnSize':S.prefs.size=S.prefs.size==='big'?'normal':'big';store.set('ab_prefs',S.prefs);applyPrefs();toast(S.prefs.size==='big'?'강의용 큰 글씨로 바꿨어요':'보통 글씨로 바꿨어요');return;
+    case 'btnTheme':var seq={auto:'dark',dark:'light',light:'auto'};S.prefs.theme=seq[S.prefs.theme]||'auto';store.set('ab_prefs',S.prefs);applyPrefs();toast({auto:'폰 설정 따라가기',dark:'어둡게',light:'밝게'}[S.prefs.theme]);return;
+    case 'addApp':appForm(null);return;
+    case 'owner':if(cur)askPw(cur);return;
+    case 'editApp':if(cur)appForm(cur);return;
+    case 'addUpdate':if(cur)updateForm(cur);return;
+    case 'fbSend':{
+      var tx=$('#fbText').value.trim();if(!tx){toast('의견을 적어 주세요');$('#fbText').focus();return}
+      var nm=$('#fbName').value.trim();setMe(nm);
+      send('addFeedback',{appId:ds.app,type:S.ftype,author:nm,text:tx},'의견을 보냈어요. 고맙습니다!',t);return;
+    }
+    case 'iSend':{
+      var it=$('#iT').value.trim();if(!it){toast('어떤 앱인지 한 줄로 적어 주세요');$('#iT').focus();return}
+      var inn=$('#iN').value.trim();setMe(inn);
+      send('addIdea',{title:it,text:$('#iX').value.trim(),author:inn},'아이디어를 올렸어요 💡',t);return;
+    }
+    case 'tSend':{
+      var tt=$('#tT').value.trim();if(!tt){toast('듣고 싶은 주제를 적어 주세요');$('#tT').focus();return}
+      var tn=$('#tN').value.trim();setMe(tn);
+      send('addTopic',{title:tt,text:$('#tX').value.trim(),author:tn},'신청했어요 🎓',t);return;
+    }
+    case 'dSend':{
+      var da=$('#dA').value.trim();if(!da){toast('시연할 앱 이름을 적어 주세요');$('#dA').focus();return}
+      var dn=$('#dN').value.trim();if(!dn){toast('발표자 이름을 적어 주세요');$('#dN').focus();return}setMe(dn);
+      send('addDemo',{app:da,when:$('#dW').value.trim(),note:$('#dX').value.trim(),author:dn},'시연 신청을 받았어요 🎤',t);return;
+    }
+    case 'qSend':{
+      var qt=$('#qT').value.trim();if(!qt){toast('질문을 한 줄로 적어 주세요');$('#qT').focus();return}
+      var qn=$('#qN').value.trim();setMe(qn);
+      send('addQuestion',{title:qt,text:$('#qX').value.trim(),author:qn},'질문을 올렸어요. 곧 답이 달릴 거예요',t);return;
+    }
+    case 'aSend':{
+      var ax=$('#aX').value.trim();if(!ax){toast('답변을 적어 주세요');$('#aX').focus();return}
+      var an=$('#aN').value.trim();setMe(an);
+      send('addAnswer',{qId:ds.q,text:ax,author:an},'답변을 올렸어요. 고맙습니다!',t);return;
+    }
+  }
+});
+document.addEventListener('input',function(e){
+  if(e.target.id==='q'){S.q=e.target.value;var pos=e.target.selectionStart;render();var n=$('#q');n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}
+});
+document.addEventListener('change',function(e){if(e.target.id==='sort'){S.sort=e.target.value;render()}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var l=$('.lightbox');if(l)l.remove();else closeModal()}});
+window.addEventListener('hashchange',function(){closeModal();render();window.scrollTo(0,0)});
+new MutationObserver(function(){var s=$('#sort');if(s&&s.value!==S.sort)s.value=S.sort}).observe($('#view'),{childList:true});
+
+/* ---------- 시작 ---------- */
+applyPrefs();
+render();
+load(!!S.data,true);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&!$('.modal'))load(true,true)});
+if('serviceWorker' in navigator&&!DEMO){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
+})();
+</script>
+</body>
+</html>
